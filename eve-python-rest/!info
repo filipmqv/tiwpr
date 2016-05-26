@@ -1,0 +1,2 @@
+uruchomienie bazy danych
+mongod --dbpath=/home/filipmqv/tiwpr/eve-python-rest/data/db/
