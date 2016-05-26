@@ -16,10 +16,6 @@ class Authenticate(BasicAuth):
             return email == 'admin' and password == 'password'
         else:
             return True
-       
-#def myMethod(resource, request):
-#	print "dsadasd"
-	#abort(200)
 
 app = Eve(auth=Authenticate)
 
@@ -31,7 +27,7 @@ def hello_world_post():
 	return resp
 
 
+
+
 if __name__ == '__main__':
-    
-    #app.on_pre_POST_test += myMethod
     app.run()
