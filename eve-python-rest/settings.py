@@ -122,7 +122,8 @@ classes = {
             'type': 'string',
             'unique': True
         }
-    }
+    },
+    'hateoas': False
 }
 
 subjects = {
