@@ -12,7 +12,8 @@
  app.controller('LoginCtrl', function ($scope, LoginService, localStorageService, $location) {
 
  	$scope.user = {};
- 	$scope.user.email = 'imie1nazw1@wp.pl';
+ 	$scope.user.email = 'imie4nazw4@wp.pl'; // teacher
+ 	//$scope.user.email = 'imie1nazw1@wp.pl'; // student
  	$scope.user.password = 'password';
  	$scope.isError = false;
  	$scope.errorMsg = '';
@@ -20,6 +21,7 @@
  	$scope.initController = function() {
  			if (localStorageService.get('credentials')) {
  				$scope.isLoggedIn = true;
+ 				$scope.role = localStorageService.get('role');
  			}
  			else {
  				$scope.isLoggedIn = false;

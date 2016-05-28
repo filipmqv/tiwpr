@@ -22,6 +22,7 @@
   <p>Spectacular Test Runner for JavaScript.</p>
 </div>
 -->
-<select ng-model="op" ng-options="class.name for class in classes | orderBy:'name'">
+<select ng-model="chosenClass" ng-options="class.name for class in classes | orderBy:'name'">
 <option value=""></option>
 </select><br/>
+<p>{{chosenClass._id}}  {{chosenClass.name}}</p>

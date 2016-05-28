@@ -2,14 +2,14 @@
 
 /**
  * @ngdoc function
- * @name restClientApp.controller:MainCtrl
+ * @name restClientApp.controller:StudentCtrl
  * @description
- * # MainCtrl
+ * # StudentCtrl
  * Controller of the restClientApp
  */
  var app = angular.module('restClientApp');
 
- app.controller('MainCtrl', function ($scope, ClassesService/*, $timeout*/) {
+ app.controller('StudentCtrl', function ($scope, ClassesService/*, $timeout*/) {
 
  	var clearVariables = function () {
  		$scope.classes = [];

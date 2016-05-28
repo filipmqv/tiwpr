@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="styles/login.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="restClientApp">
+  <body ng-app="restClientApp" ng-cloak>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -42,7 +42,9 @@
 
             <ul class="nav navbar-nav">
               <li><a href="#/">Home</a></li>
-              <li><a ng-href="#/about">About</a></li>
+              <!--<li><a ng-href="#/about">About</a></li>-->
+              <li><a ng-if="role=='student'" ng-href="#/student">For Student</a></li>
+              <li><a ng-if="role=='teacher'" ng-href="#/teacher">For Teacher</a></li>
               <!--<li><a ng-href="#/">Contact</a></li>-->
               <li><a ng-hide="isLoggedIn" ng-href="#/login">Login</a></li>
               <li><a ng-show="isLoggedIn" href ng-click="logout()">Logout</a></li>
@@ -95,6 +97,8 @@
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/about.js"></script>
     <script src="scripts/controllers/login.js"></script>
+    <script src="scripts/controllers/student.js"></script>
+    <script src="scripts/controllers/teacher.js"></script>
     <script src="scripts/services.js"></script>
     <!-- endbuild -->
   </body>

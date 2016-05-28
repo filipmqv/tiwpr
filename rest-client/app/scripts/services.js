@@ -23,7 +23,7 @@ services.factory('LoginService', function ($resource) {
 
 services.factory('ClassesService', function ($resource, $http, localStorageService) {
   $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
-  console.log($http.defaults.headers.common.Authorization);
+  //console.log($http.defaults.headers.common.Authorization);
   return $resource(domainUrl + 'classes', {}, {
     query: {method: 'GET'/*, isArray: true*/},
   });
