@@ -57,7 +57,12 @@ class Authenticate(BasicAuth):
 		user = users.find_one({'email': email,'password': password})
 		if user:
 			if user.get('role') == 'student':
+				#some_list = ['abc-123', 'def-456', 'ghi-789', 'abc-456']
 				#print "student"
+				return True
+			elif user.get('role') == 'teacher':
+				return True
+			elif user.get('role') == 'parent':
 				return True
 			else:
 				#print "not student"
@@ -81,10 +86,8 @@ def login():
 	users = app.data.driver.db['users']
 	user = users.find_one({'email': email,'password': password})
 	if user:
-		#hashed = bcrypt.hashpw(password, bcrypt.gensalt())
 		hashed = base64.b64encode(email+":"+password)
 		resp = jsonify(hash = hashed, role = user.get('role'))
-		#resp = jsonify(email = "Dsfsd")
 		resp.status_code = 200
 		return resp
 	else:
