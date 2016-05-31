@@ -1,7 +1,7 @@
 <div class="container">
 
-  <div ng-if="isError" class="alert alert-danger">
-    <p>{{errorMsg}}</p>
+  <div ng-show="error" class="alert alert-danger">
+    <p>{{error}}</p>
   </div>
 
   <form class="form-signin" ng-submit="submit()">

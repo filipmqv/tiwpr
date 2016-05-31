@@ -1,0 +1,19 @@
+/* all tables */
+table {
+	width: 100%;
+}
+
+td {
+	height: 30px;
+}
+
+label {
+	width: 10em;
+	margin-right: 1em;
+	text-align: right;
+}
+
+
+/*.any-form {
+	margin: 0 auto; 
+}*/

@@ -23,7 +23,7 @@
 
 
  	var queryClasses = function () {
- 		ClassesService.query(function (data) {
+ 		ClassesService.get(function (data) {
  			$scope.classes = data._items;
  		});
  	};

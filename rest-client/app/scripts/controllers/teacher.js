@@ -9,22 +9,21 @@
  */
  var app = angular.module('restClientApp');
 
- app.controller('TeacherCtrl', function ($scope, ClassesService/*, $timeout*/) {
+ app.controller('TeacherCtrl', function ($scope, TeacherService, localStorageService) {
 
  	var clearVariables = function () {
- 		$scope.classes = [];
- 		$scope.chosenClass = {};
+ 		$scope.teacher = {};
  	};
 
  	$scope.initController = function () {
  		clearVariables();
- 		queryClasses();
+ 		getTeacherInfo();
  	};
 
 
- 	var queryClasses = function () {
- 		ClassesService.query(function (data) {
- 			$scope.classes = data._items;
+ 	var getTeacherInfo = function () {
+ 		TeacherService.get({teacherId:localStorageService.get('myId')}, function (data) {
+ 			$scope.teacher = data;
  		});
  	};
 

@@ -1,0 +1,37 @@
+<div class="form-group">
+	<label for="inputTestType">Test Type</label>
+	<select ng-model="test.testtype" id="inputTestType" required>
+		<option ng-repeat="option in testTypes" value="{{option}}">{{option}}</option>
+	</select>
+</div>
+
+<div class="form-group">
+	<label for="inputName">Name</label>
+	<input ng-model="test.name" type="text" id="inputName" class="" required>
+</div>
+
+<div class="form-group">
+	<label for="inputTestDate">Date</label>
+	<input type="date" ng-model="$parent.picker" id="inputTestDate" required>
+</div>
+
+<div class="form-group">
+	<label for="inputClass">Class</label>
+	<select ng-model="test.class_id" id="inputClass" required>
+		<option ng-repeat="option in classes" value="{{option._id}}">{{option.name}}</option>
+	</select>
+</div>
+
+<div class="form-group">
+	<label for="inputSubject">Subject</label>
+	<select ng-model="test.subject_id" id="inputSubject" required>
+		<option ng-repeat="option in subjects" value="{{option._id}}">{{option.name}}</option>
+	</select>
+</div>
+
+<div class="control-group">
+	<div class="controls options">
+		<button class="btn btn-lg btn-primary" type="submit">{{buttonText}}</button>
+		<a class="btn btn-small btn-link" ng-href="#/tests">Cancel</a>
+	</div>
+</div>

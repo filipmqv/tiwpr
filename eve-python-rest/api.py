@@ -65,7 +65,7 @@ class Authenticate(BasicAuth):
 			elif user.get('role') == 'parent':
 				return True
 			else:
-				#print "not student"
+				#print "not allowed"
 				return False
 		elif email == 'admin' and password == 'password':
 			return True
@@ -87,13 +87,14 @@ def login():
 	user = users.find_one({'email': email,'password': password})
 	if user:
 		hashed = base64.b64encode(email+":"+password)
-		resp = jsonify(hash = hashed, role = user.get('role'))
+		resp = jsonify(hash = hashed, role = user.get('role'), myId = str(user.get('_id')))
 		resp.status_code = 200
 		return resp
 	else:
 		resp = jsonify(error = 'Wrong email or password.')
 		resp.status_code = 401
 		return resp
+
 
 
 if __name__ == '__main__':

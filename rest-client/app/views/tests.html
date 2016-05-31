@@ -1,0 +1,33 @@
+<a ng-href="#/tests/new" class="btn btn-primary">Add New Test</a>
+
+<hr>
+
+<table class="table-bordered">
+	<thead>
+		<tr>
+			<td>Date</td>
+			<td>Subject</td>
+			<td>Type</td>
+			<td>Name</td>
+			<td>Class</td>
+			<td>Status</td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="test in tests">
+			<td>{{ test.testdate | date:'yyyy-MM-dd' }}</td>
+			<td ng-repeat="item in subjects | filter:test.subject_id">{{item.name}}</td>
+			<td>{{ test.testtype }}</td>
+			<td>{{ test.name }}</td>
+			<td ng-repeat="item in classes | filter:test.class_id">{{item.name}}</td>
+			<td>{{ testStatus[test.status] }}</td>
+			<td>
+			<a ng-href="#/tests/{{test._id}}/edit"> <span class="glyphicon glyphicon-edit"
+					aria-hidden="true"></span> </a>
+				<a href="" ng-click="deleteTest(test)"> <span class="glyphicon glyphicon-remove-circle"
+					aria-hidden="true"></span> </a>
+			</td>
+		</tr>
+	</tbody>
+</table>

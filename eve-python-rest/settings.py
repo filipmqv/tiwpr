@@ -5,6 +5,7 @@ ITEM_METHODS = ['GET','PATCH','DELETE'] # dla konkretnego id
 X_DOMAINS = '*'
 X_HEADERS = ['Authorization','If-Match','Access-Control-Expose-Headers','Content-Type','Pragma','Cache-Control']
 X_EXPOSE_HEADERS = ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+CACHE_CONTROL = 'max-age=1,must-revalidate'
 
 DATE_FORMAT ='%Y-%m-%d %H:%M:%S'
 
@@ -139,6 +140,7 @@ subjects = {
 # test to coś co można zapowiedzieć
 tests = {
     'item_title': 'test',
+    'item_methods': ['GET','PUT','DELETE'],
     'schema': {
         'testtype': {
             'type': 'string',

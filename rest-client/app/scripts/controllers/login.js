@@ -15,8 +15,7 @@
  	$scope.user.email = 'imie4nazw4@wp.pl'; // teacher
  	//$scope.user.email = 'imie1nazw1@wp.pl'; // student
  	$scope.user.password = 'password';
- 	$scope.isError = false;
- 	$scope.errorMsg = '';
+ 	$scope.error = '';
 
  	$scope.initController = function() {
  			if (localStorageService.get('credentials')) {
@@ -36,15 +35,14 @@
  				function (data) {
  					localStorageService.set('credentials', data.hash);
  					localStorageService.set('role', data.role);
+ 					localStorageService.set('myId', data.myId);
  					$location.path('/');
-					$location.replace();
 					window.location.reload();
  				},
  				function (error) {
  					console.log(error);
  					$scope.isLoggedIn = false;
- 					$scope.isError = true;
- 					$scope.errorMsg = 'Wrong email or password!';
+ 					$scope.error = 'Wrong email or password!';
  				});
 		}
 	};
@@ -52,7 +50,6 @@
 	$scope.logout = function() {
         localStorageService.clearAll();
         $location.path('/');
-		$location.replace();
 		window.location.reload();
       };
 

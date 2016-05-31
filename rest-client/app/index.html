@@ -14,6 +14,7 @@
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/my.css">
     <!-- endbuild -->
   </head>
   <body ng-app="restClientApp" ng-cloak>
@@ -32,19 +33,20 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="#/">restClient</a>
+            <a class="navbar-brand" href="#/"><i class="glyphicon glyphicon-apple"></i></a>
           </div>
 
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
 
             <ul class="nav navbar-nav">
-              <li><a href="#/">Home</a></li>
-              <!--<li><a ng-href="#/about">About</a></li>-->
-              <li><a ng-if="role=='student'" ng-href="#/student">For Student</a></li>
-              <li><a ng-if="role=='teacher'" ng-href="#/teacher">For Teacher</a></li>
+              <!--<li><a href="#/">Home</a></li>-->
+              <li><a ng-if="role=='student'" ng-href="#/student">Student</a></li>
+              <li><a ng-if="role=='teacher'" ng-href="#/teacher">Teacher</a></li>
+              <li><a ng-if="role=='teacher'" ng-href="#/tests">Tests</a></li>
+              <li><a ng-if="role=='teacher'" ng-href="#/lessons">Lessons</a></li>
+              <li><a ng-if="role=='teacher'" ng-href="#/students">Students</a></li>
               <!--<li><a ng-href="#/">Contact</a></li>-->
               <li><a ng-hide="isLoggedIn" ng-href="#/login">Login</a></li>
               <li><a ng-show="isLoggedIn" href ng-click="logout()">Logout</a></li>
@@ -60,7 +62,7 @@
 
     <div class="footer">
       <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+        <p>School REST App</p>
       </div>
     </div>
 
@@ -99,6 +101,7 @@
     <script src="scripts/controllers/login.js"></script>
     <script src="scripts/controllers/student.js"></script>
     <script src="scripts/controllers/teacher.js"></script>
+    <script src="scripts/controllers/tests.js"></script>
     <script src="scripts/services.js"></script>
     <!-- endbuild -->
   </body>
