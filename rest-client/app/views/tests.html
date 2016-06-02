@@ -1,8 +1,10 @@
+<div class="text-right">
 <a ng-href="#/tests/new" class="btn btn-primary">Add New Test</a>
+</div>
 
 <hr>
 
-<table class="table-bordered">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<td>Date</td>
@@ -10,7 +12,7 @@
 			<td>Type</td>
 			<td>Name</td>
 			<td>Class</td>
-			<td>Status</td>
+			<!--<td>Status</td>-->
 			<td></td>
 		</tr>
 	</thead>
@@ -21,7 +23,7 @@
 			<td>{{ test.testtype }}</td>
 			<td>{{ test.name }}</td>
 			<td ng-repeat="item in classes | filter:test.class_id">{{item.name}}</td>
-			<td>{{ testStatus[test.status] }}</td>
+			<!--<td>{{ testStatus[test.status] }}</td>-->
 			<td>
 			<a ng-href="#/tests/{{test._id}}/edit"> <span class="glyphicon glyphicon-edit"
 					aria-hidden="true"></span> </a>

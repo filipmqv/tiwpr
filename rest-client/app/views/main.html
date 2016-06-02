@@ -22,7 +22,13 @@
   <p>Spectacular Test Runner for JavaScript.</p>
 </div>
 -->
+
+<p>{{chosenClass._id}}  {{chosenClass.name}}</p>
+<div class="jumbotron">
+  <h1><i class="glyphicon glyphicon-apple"></i>&nbsp School REST App</h1>
+  <p class="lead"></p>
+</div>
+<br><br>
 <select ng-model="chosenClass" ng-options="class.name for class in classes | orderBy:'name'">
 <option value=""></option>
-</select><br/>
-<p>{{chosenClass._id}}  {{chosenClass.name}}</p>
+</select>

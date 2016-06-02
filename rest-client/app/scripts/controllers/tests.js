@@ -49,11 +49,10 @@ app.controller('TestsCtrl', function ($scope, $window, TestsService, ClassesServ
 		});
 	};
 
-	$scope.deleteTest = function(test) { // Delete a movie. Issues a DELETE to /api/movies/:id
-		console.log(test);
+	$scope.deleteTest = function(test) {
 		if (popupService.showPopup('Really delete this?')) {
 			localStorageService.set('etag', test._etag);
-			TestsService.delete({teacherId:localStorageService.get('myId'), testId: test._id}, test, function() {
+			TestsService.delete({teacherId:localStorageService.get('myId')}, test, function() {
 				getTests();
 			});
 		}
@@ -64,7 +63,8 @@ app.controller('TestsCtrl', function ($scope, $window, TestsService, ClassesServ
 
 
 
-app.controller('TestAddCtrl', function($scope, $routeParams, $location, $filter, TestsService, ClassesService, SubjectsService, localStorageService/*, $state, $/*, Movie*/) {
+app.controller('TestAddCtrl', function($scope, $routeParams, $location, $filter, TestsService, ClassesService, 
+	SubjectsService, localStorageService) {
 
 	var clearVariables = function () {
 		$scope.buttonText = 'Add';
@@ -103,42 +103,23 @@ app.controller('TestAddCtrl', function($scope, $routeParams, $location, $filter,
 	};
 
 	$scope.addTest = function() { 
-		console.log($scope.test);
 		$scope.test.teacher_id = localStorageService.get('myId');
 		$scope.test.status = 0;
-		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-dd HH:mm:ss');
+		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
 		clearUnnecessaryFields();
 
-		$scope.test.$save({teacherId:localStorageService.get('myId'), testId: $scope.test._id}, function() {
+		$scope.test.$save({teacherId:localStorageService.get('myId')}, function() {
 			$location.path('/tests');
 		});
 	};	
-
-	$scope.updateTest = function() { //Update the edited movie. Issues a PUT to /api/movies/=id
-		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-dd HH:mm:ss');
-		clearUnnecessaryFields();
-
-		TestsService.update({teacherId:localStorageService.get('myId'), testId: $scope.test._id}, $scope.test, function(data) {
-			console.log(data);
-			localStorageService.remove('etag');
-			$location.path('/tests');
-		}, function (error) {
-			if (error.status === 412) {
-				$scope.error = 'You do not update the newest data. Refresh page and try again.';
-			}
-			else if (error.status === 422) {
-				$scope.error = 'Incorrect data';
-			}
-			console.log(error);
-		});
-	};
 
 	$scope.initController();
 });
 
 
 
-app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter, TestsService, ClassesService, SubjectsService, localStorageService/*, $state, $/*, Movie*/) {
+app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter, TestsService, 
+	ClassesService, SubjectsService, localStorageService) {
 
 	var clearVariables = function () {
 		$scope.buttonText = 'Save';
@@ -184,12 +165,11 @@ app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter
 		delete $scope.test._links;
 	};
 
-	$scope.updateTest = function() { //Update the edited movie. Issues a PUT to /api/movies/=id
-		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-dd HH:mm:ss');
+	$scope.updateTest = function() {
+		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
 		clearUnnecessaryFields();
 
-		TestsService.update({teacherId:localStorageService.get('myId'), testId: $scope.test._id}, $scope.test, function(data) {
-			console.log(data);
+		TestsService.update({teacherId:localStorageService.get('myId')}, $scope.test, function() {
 			localStorageService.remove('etag');
 			$location.path('/tests');
 		}, function (error) {

@@ -52,7 +52,7 @@ def crossdomain(origin=None, methods=None, headers=None,
 
 class Authenticate(BasicAuth):
 	def check_auth(self, email, password, allowed_roles, resource, method):
-		print "entering"
+		#print "entering"
 		users = app.data.driver.db['users']
 		user = users.find_one({'email': email,'password': password})
 		if user:
@@ -98,4 +98,4 @@ def login():
 
 
 if __name__ == '__main__':
-	app.run()
+	app.run(threaded=True)

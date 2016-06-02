@@ -1,13 +1,17 @@
-RESOURCE_METHODS = ['GET','POST','DELETE'] # dla calej kolekcji
+RESOURCE_METHODS = ['GET','POST'] # dla calej kolekcji
 
-ITEM_METHODS = ['GET','PATCH','DELETE'] # dla konkretnego id
+ITEM_METHODS = ['GET','PUT','DELETE'] # dla konkretnego id
 
 X_DOMAINS = '*'
 X_HEADERS = ['Authorization','If-Match','Access-Control-Expose-Headers','Content-Type','Pragma','Cache-Control']
 X_EXPOSE_HEADERS = ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 CACHE_CONTROL = 'max-age=1,must-revalidate'
 
-DATE_FORMAT ='%Y-%m-%d %H:%M:%S'
+PAGINATION = False
+PAGINATION_LIMIT = 9999999
+PAGINATION_DEFAULT = 25
+
+DATE_FORMAT ='%Y-%m-%dT%H:%M:%S'
 
 users = {
     'item_title': 'user',
@@ -71,16 +75,28 @@ users = {
 }
 
 students = {
+    'pagination': True,
     'datasource': {
         'source': 'users',
         'filter': {'role': 'student'},
-        'projection': {'password': 0}
+        'projection': {'password': 0},
+        'default_sort': [('class_id', 1), ('lastname',1)]
+    }
+}
+
+students_all = {
+    'datasource': {
+        'source': 'users',
+        'filter': {'role': 'student'},
+        'projection': {'password': 0},
+        'default_sort': [('class_id', 1)]
     }
 }
 
 grades_schema = {
     'gradevalue': {
-        'type': 'integer',
+        'type': 'string',
+        'allowed': ["1", "1+", "2-", "2", "2+", "3-", "3", "3+", "4-", "4", "4+", "5-", "5", "5+", "6-", "6", "6+"],
         'required': True
     },
     'student_id': {
@@ -109,7 +125,7 @@ grades = {
 }
 
 students_grades = {
-    'url': 'users/<regex("[a-f0-9]{24}"):student_id>/grades',
+    'url': 'students/<regex("[a-f0-9]{24}"):student_id>/grades',
     'schema': grades_schema,
     "datasource": {"source": "grades"},
     'hateoas': False
@@ -140,7 +156,6 @@ subjects = {
 # test to coś co można zapowiedzieć
 tests = {
     'item_title': 'test',
-    'item_methods': ['GET','PUT','DELETE'],
     'schema': {
         'testtype': {
             'type': 'string',
@@ -191,6 +206,7 @@ tests = {
 DOMAIN = {
     'users': users, 
     'students': students,
+    'students_all': students_all,
     'grades': grades,
     'students_grades': students_grades,
     'classes': classes, 

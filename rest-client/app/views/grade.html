@@ -1,0 +1,53 @@
+<h3>{{ student.firstname }} {{ student.lastname }}</h3>
+<h4 ng-cloak ng-repeat="item in classes | filter:student.class_id">Class: {{item.name}} &nbsp&nbsp|&nbsp&nbsp No: {{ student.registrynumber }}</h4>
+
+<hr>
+<div ng-show="error" class="alert alert-danger">
+    <p>{{error}}</p>
+</div>
+<!--
+{
+  "_id": "57470a460054803b19fd8df3",
+  "student_id": "5746fb4a0054802f7631eff8",
+  "test_id": {
+    "status": 0,
+    "teacher_id": "5746fbb40054802f7631effb",
+    "name": "pierwiastki",
+    "class_id": "5744b9ae0054804833f17fa5",
+    "subject_id": "5744cac300548059b867a08e",
+    "_updated": "2016-06-01 18:11:36",
+    "testdate": "2017-06-21 00:00:00",
+    "_created": "2016-05-26 13:39:27",
+    "_id": "5746fc8f0054802f7631efff",
+    "testtype": "essay",
+    "_etag": "15bf898b3ba8ec7d98328f9818f1d5c290bcb23e"
+  },
+  "_etag": "6c34dfdd00a408777c50c61eaf17f9022903c575",
+  "gradevalue": 5
+}-->
+<div>
+	<ul ng-hide="editMode" class="list-inline">
+	<li><a href ng-click="switchToEditMode()" class="btn btn-primary">Edit Grade</a></li>
+	<li><a href ng-click="deleteGrade(grade)" class="btn btn-primary">Delete Grade</a></li>
+	</ul>
+	<h3 ng-hide="editMode">Value: {{grade.gradevalue}}</h3>
+	<form ng-show="editMode" ng-submit="updateGrade()">
+		<div class="control-group">
+			<div class="controls options">
+				<button class="btn btn-primary" type="submit">Save</button>
+				<a class="btn btn-small btn-link" ng-click="switchToNormalMode()" href>Cancel</a>
+			</div>
+		</div>
+		<br>
+		<div class="form-group">
+			<!--<label for="inputGradeValue">Value: </label>-->
+			<h3 style="display: inline;">Value: </h3>
+			<select ng-model="gradeOption" id="inputTestType" required>
+				<option ng-repeat="option in allowedGrades" value="{{option}}">{{option}}</option>
+			</select>
+		</div>
+	</form>
+	<p ng-repeat="item in subjects | filter:test.subject_id">Subject: {{item.name}}</p>
+	<p>Test: {{test.testtype}} / {{test.name}}</p>
+	<p>Teacher: {{teacher.firstname}} {{teacher.lastname}}</p>
+</div>

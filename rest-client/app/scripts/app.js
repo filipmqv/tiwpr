@@ -34,10 +34,7 @@ angular
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
       })
-      .when('/student', {
-        templateUrl: 'views/student.html',
-        controller: 'StudentCtrl'
-      })
+      
       .when('/teacher', {
         templateUrl: 'views/teacher.html',
         controller: 'TeacherCtrl'
@@ -55,29 +52,29 @@ angular
         templateUrl: 'views/test-edit.html',
         controller: 'TestEditCtrl'
       })
+
+      .when('/students', {
+        templateUrl: 'views/students.html',
+        controller: 'StudentsCtrl'
+      })
+      .when('/students/:id', {
+        templateUrl: 'views/student.html',
+        controller: 'StudentCtrl'
+      })
+      .when('/students/:id/grades/new', {
+        templateUrl: 'views/grade-add.html',
+        controller: 'GradeAddCtrl'
+      })
+      .when('/students/:id/grades/:gradeId', {
+        templateUrl: 'views/grade.html',
+        controller: 'GradeCtrl'
+      })
       
+
       .otherwise({
         redirectTo: '/'
       });
-      /*
-
-      $stateProvider.state('movies', { // state for showing all movies
-    url: '/movies',
-    templateUrl: 'partials/movies.html',
-    controller: 'MovieListController'
-  }).state('viewMovie', { //state for showing single movie
-    url: '/movies/:id/view',
-    templateUrl: 'partials/movie-view.html',
-    controller: 'MovieViewController'
-  }).state('newMovie', { //state for adding a new movie
-    url: '/movies/new',
-    templateUrl: 'partials/movie-add.html',
-    controller: 'MovieCreateController'
-  }).state('editMovie', { //state for updating a movie
-    url: '/movies/:id/edit',
-    templateUrl: 'partials/movie-edit.html',
-    controller: 'MovieEditController'
-    */
+      
     localStorageServiceProvider
       .setPrefix('restClientApp')
       .setStorageType('localStorage')

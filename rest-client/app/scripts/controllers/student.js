@@ -9,24 +9,47 @@
  */
  var app = angular.module('restClientApp');
 
- app.controller('StudentCtrl', function ($scope, ClassesService/*, $timeout*/) {
+ app.controller('StudentCtrl', function ($scope, $routeParams, StudentsService, ClassesService, 
+ 	SubjectsService, GradesService) {
 
  	var clearVariables = function () {
+ 		$scope.student = {};
+ 		$scope.grades = [];
+ 		$scope.subjects = [];
  		$scope.classes = [];
- 		$scope.chosenClass = {};
  	};
 
  	$scope.initController = function () {
  		clearVariables();
- 		queryClasses();
+ 		getClasses();
+ 		getSubjects();
+ 		getStudent();
+ 		getGrades();
  	};
 
-
- 	var queryClasses = function () {
- 		ClassesService.query(function (data) {
+ 	var getClasses = function () {
+ 		ClassesService.get(function (data) {
  			$scope.classes = data._items;
  		});
  	};
 
+ 	var getStudent = function () {
+		StudentsService.get({studentId:$routeParams.id}, function (data) {
+			$scope.student = data;
+		});
+	};
+
+	var getSubjects = function () {
+		SubjectsService.get(function (data) {
+			$scope.subjects = data._items;
+		});
+	};
+
+	var getGrades = function () {
+		GradesService.get({studentId:$routeParams.id}, function (data) {
+			$scope.grades = data._items;
+		});
+	};
+	
  	$scope.initController();
  });

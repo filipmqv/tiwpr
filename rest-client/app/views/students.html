@@ -1,0 +1,27 @@
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Class</td>
+			<td>Name</td>
+			<td>Registry No</td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="student in students">
+			<td ng-repeat="item in classes | filter:student.class_id">{{item.name}}</td>
+			<td>{{ student.firstname }} {{ student.lastname }}</td>
+			<td>{{ student.registrynumber }}</td>
+			<td>
+			<a ng-href="#/students/{{student._id}}"> <span class="glyphicon glyphicon-edit"
+					aria-hidden="true"></span> </a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div>
+<ul class="pagination">
+	<li ng-repeat="n in range()"><a href ng-click="getStudents(n)">{{n}}</a></li>
+</ul>
+</div>

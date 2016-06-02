@@ -1,10 +1,5 @@
-/* all tables */
-table {
-	width: 100%;
-}
-
-td {
-	height: 30px;
+td ul {
+	display: inline;
 }
 
 label {
@@ -13,7 +8,9 @@ label {
 	text-align: right;
 }
 
-
-/*.any-form {
-	margin: 0 auto; 
-}*/
+.btn-new-item {
+	float: right;
+    margin-bottom: 10px;
+    margin-top: -8px;
+    overflow: auto;
+}

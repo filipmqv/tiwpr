@@ -42,12 +42,13 @@
 
             <ul class="nav navbar-nav">
               <!--<li><a href="#/">Home</a></li>-->
-              <li><a ng-if="role=='student'" ng-href="#/student">Student</a></li>
-              <li><a ng-if="role=='teacher'" ng-href="#/teacher">Teacher</a></li>
               <li><a ng-if="role=='teacher'" ng-href="#/tests">Tests</a></li>
               <li><a ng-if="role=='teacher'" ng-href="#/lessons">Lessons</a></li>
               <li><a ng-if="role=='teacher'" ng-href="#/students">Students</a></li>
-              <!--<li><a ng-href="#/">Contact</a></li>-->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a ng-if="role=='student'" ng-href="#/students/{{myId}}">Student, {{user.firstname}}</a></li>
+              <li><a ng-if="role=='teacher'" ng-href="#/teacher">Teacher, {{user.firstname}}</a></li>
               <li><a ng-hide="isLoggedIn" ng-href="#/login">Login</a></li>
               <li><a ng-show="isLoggedIn" href ng-click="logout()">Logout</a></li>
             </ul>
@@ -102,6 +103,8 @@
     <script src="scripts/controllers/student.js"></script>
     <script src="scripts/controllers/teacher.js"></script>
     <script src="scripts/controllers/tests.js"></script>
+    <script src="scripts/controllers/students.js"></script>
+    <script src="scripts/controllers/grade.js"></script>
     <script src="scripts/services.js"></script>
     <!-- endbuild -->
   </body>

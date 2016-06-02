@@ -9,28 +9,38 @@
  */
  var app = angular.module('restClientApp');
 
- app.controller('LoginCtrl', function ($scope, LoginService, localStorageService, $location) {
+ app.controller('LoginCtrl', function ($scope, LoginService, UserService, localStorageService, $location) {
 
  	$scope.user = {};
- 	$scope.user.email = 'imie4nazw4@wp.pl'; // teacher
- 	//$scope.user.email = 'imie1nazw1@wp.pl'; // student
- 	$scope.user.password = 'password';
+ 	$scope.userForm = {};
+ 	$scope.userForm.email = 'teacher1@wp.pl'; // teacher
+ 	//$scope.userForm.email = 'student1@wp.pl'; // student
+ 	$scope.userForm.password = 'password';
  	$scope.error = '';
+ 	$scope.myId = {};
 
  	$scope.initController = function() {
  			if (localStorageService.get('credentials')) {
  				$scope.isLoggedIn = true;
  				$scope.role = localStorageService.get('role');
+ 				$scope.myId = localStorageService.get('myId');
+ 				getUserInfo();
  			}
  			else {
  				$scope.isLoggedIn = false;
  			}
  	};
 
+ 	var getUserInfo = function () {
+ 		UserService.get({userId:$scope.myId}, function (data) {
+ 			$scope.user = data;
+ 		});
+ 	};
+
  	$scope.submit = function() {
- 		if ($scope.user.email && $scope.user.password) {
+ 		if ($scope.userForm.email && $scope.userForm.password) {
  			localStorageService.clearAll();
- 			LoginService.save($scope.user).$promise
+ 			LoginService.save($scope.userForm).$promise
  			.then(
  				function (data) {
  					localStorageService.set('credentials', data.hash);

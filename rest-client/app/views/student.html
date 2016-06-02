@@ -1,1 +1,33 @@
-student view
+<h3>{{ student.firstname }} {{ student.lastname }}</h3>
+<h4 ng-cloak ng-repeat="item in classes | filter:student.class_id">Class: {{item.name}} &nbsp&nbsp|&nbsp&nbsp No: {{ student.registrynumber }}</h4>
+
+<hr>
+
+<div class="">
+	<h4 style="display: inline;">Grades</h4>
+	<a ng-href="#/students/{{student._id}}/grades/new" class="btn btn-primary btn-new-item">Add New Grade</a>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<td>Subject</td>
+				<td>Grades</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="subject in subjects">
+				<td>{{ subject.name }}</td>
+				<td>
+					<ul class="list-inline">
+						<li ng-repeat="item in grades | filter:subject._id"><a ng-href="#/students/{{student._id}}/grades/{{item._id}}" ng-attr-title="{{item.test_id.testtype}} / {{item.test_id.name}}"> {{item.gradevalue}} </a></li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<hr>
+
+<div class="">
+	<h4>Attendances</h4>
+</div>
