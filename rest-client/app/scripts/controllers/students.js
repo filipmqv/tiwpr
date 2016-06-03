@@ -1,4 +1,5 @@
 'use strict';
+/*jshint camelcase: false */
 
 /**
 * @ngdoc function
@@ -9,7 +10,7 @@
 */
 var app = angular.module('restClientApp');
 
-app.controller('StudentsCtrl', function($scope, $window, ClassesService, StudentsService) {
+app.controller('StudentsCtrl', function($scope, $window, ClassesService, StudentsService, paginationService) {
 
 	var clearVariables = function() {
 		$scope.classes = [];
@@ -38,11 +39,7 @@ app.controller('StudentsCtrl', function($scope, $window, ClassesService, Student
 	};
 
 	$scope.range = function() {
-	    var input = [];
-	    for (var i = 1; i <= Math.ceil($scope.meta.total / $scope.meta.max_results); i++) {
-	        input.push(i);
-	    }
-	    return input;
+		return paginationService.paginationRange($scope.meta.total, $scope.meta.max_results);
 	};
 	
 	$scope.initController();

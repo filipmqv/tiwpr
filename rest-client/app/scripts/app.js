@@ -52,6 +52,23 @@ angular
         templateUrl: 'views/test-edit.html',
         controller: 'TestEditCtrl'
       })
+      .when('/tests/:id/grades', {
+        templateUrl: 'views/grades-add.html',
+        controller: 'TestAddGradesCtrl'
+      })
+
+      .when('/lessons', {
+        templateUrl: 'views/lessons.html',
+        controller: 'LessonsCtrl'
+      })
+      .when('/lessons/new', {
+        templateUrl: 'views/lesson-add.html',
+        controller: 'LessonAddCtrl'
+      })
+      .when('/lessons/:lessonId', {
+        templateUrl: 'views/lesson.html',
+        controller: 'LessonCtrl'
+      })
 
       .when('/students', {
         templateUrl: 'views/students.html',

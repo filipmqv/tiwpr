@@ -140,6 +140,9 @@ classes = {
             'unique': True
         }
     },
+    'datasource': {
+        'default_sort': [('name', 1)]
+    },
     'hateoas': False
 }
 
@@ -150,6 +153,9 @@ subjects = {
             'type': 'string',
             'unique': True
         }
+    },
+    'datasource': {
+        'default_sort': [('name', 1)]
     }
 }
 
@@ -198,9 +204,98 @@ tests = {
             'type': 'integer', 
             'required': True
         }
+    },
+    'datasource': {
+        'default_sort': [('testdate', -1)]
     }
 }
 #typ(spr, kart, odp, zad. domowe), tytuł, data, przedmiot, klasa(czyli uczniowie), nauczyciel
+
+attendances_schema = {
+    'student_id': {
+        'type': 'objectid',
+        'data_relation': {
+             'resource': 'users',
+             'field': '_id',
+             'embeddable': True
+        },
+        'required': True
+    },
+    'lesson_id': {
+        'type': 'objectid',
+        'data_relation': {
+             'resource': 'lessons',
+             'field': '_id',
+             'embeddable': True
+        },
+        'required': True
+    },
+    'status': {
+        'type': 'string',
+        'allowed': ["absent", "present", "justified"], #nieobecny (czyli nieuspr.), obecny, usprawiedliwony
+        'required': True
+    }
+}
+
+attendances = {
+    'item_title': 'attendance',
+    'schema': attendances_schema
+}
+
+students_attendances = {
+    'url': 'students/<regex("[a-f0-9]{24}"):student_id>/attendances',
+    'schema': attendances_schema,
+    "datasource": {"source": "attendances"},
+    'hateoas': False
+}
+
+absences = {
+    'url': 'students/<regex("[a-f0-9]{24}"):student_id>/absences',
+    'schema': attendances_schema,
+    "datasource": {
+        "source": "attendances",
+        'filter': {'status': 'absent'}
+    },
+    'hateoas': False
+}
+
+lessons = {
+    'item_title': 'lesson',
+    'pagination': True,
+    'schema': {
+        'lessondate': {
+            'type': 'datetime',
+            'required': True
+        },
+        'class_id': {
+            'type': 'objectid',
+            'data_relation': {
+                 'resource': 'classes',
+                 'field': '_id',
+                 'embeddable': True
+            }
+        },
+        'teacher_id': {
+            'type': 'objectid',
+            'data_relation': {
+                 'resource': 'users',
+                 'field': '_id',
+                 'embeddable': True
+            }
+        },
+        'subject_id': {
+            'type': 'objectid',
+            'data_relation': {
+                 'resource': 'subjects',
+                 'field': '_id',
+                 'embeddable': True
+            },
+        }
+    },
+    'datasource': {
+        'default_sort': [('lessondate', -1)]
+    }
+}
 
 
 DOMAIN = {
@@ -211,5 +306,9 @@ DOMAIN = {
     'students_grades': students_grades,
     'classes': classes, 
     'subjects': subjects,
-    'tests': tests
+    'tests': tests,
+    'attendances': attendances,
+    'students_attendances': students_attendances,
+    'absences': absences,
+    'lessons': lessons
 }

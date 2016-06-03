@@ -1,0 +1,33 @@
+<div class="text-right">
+<a ng-href="#/lessons/new" class="btn btn-primary">Add New Lesson</a>
+</div>
+
+<hr>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Date</td>
+			<td>Class</td>
+			<td>Subject</td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="lesson in lessons">
+			<td>{{ lesson.lessondate | date:'yyyy-MM-dd' }}</td>
+			<td>{{ lesson.class_id.name }}</td>
+			<td>{{ lesson.subject_id.name }}</td>
+			<td>
+			<a ng-href="#/lessons/{{lesson._id}}"> <span class="glyphicon glyphicon-edit"
+					aria-hidden="true"></span> </a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div>
+<ul class="pagination">
+	<li ng-repeat="n in range()"><a href ng-click="getLessons(n)">{{n}}</a></li>
+</ul>
+</div>

@@ -1,0 +1,57 @@
+<h3>Lesson {{lesson.lessondate | date:'yyyy-MM-dd'}}</h3>
+<h4 ng-cloak >Class: {{lesson.class_id.name}} &nbsp&nbsp|&nbsp&nbsp Subject: {{ lesson.subject_id.name }}</h4>
+
+<hr>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Name</td>
+			<td>Registry No</td>
+			<td>Attendance</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="person in attendances">
+			<td>{{ person.student_id.firstname }} {{ person.student_id.lastname }}</td>
+			<td>{{ person.student_id.registrynumber }}</td>
+			<td>
+				{{ person.status }}&nbsp
+				<i ng-if="person.status=='absent'" class="glyphicon glyphicon-remove-sign"></i>
+				<i ng-if="person.status=='justified'" class="glyphicon glyphicon-ok-circle"></i>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<!--<form class="form-horizontal" role="form" ng-submit="addLesson()">
+
+	<div class="form-group">
+		<label for="inputLessonDate">Date</label>
+		<input type="date" ng-model="picker" id="inputLessonDate" required>
+	</div>
+
+	<div class="form-group">
+		<label for="inputSubject">Subject</label>
+		<select ng-model="lesson.subject_id" id="inputSubject" required>
+			<option ng-repeat="option in subjects" value="{{option._id}}">{{option.name}}</option>
+		</select>
+	</div>
+
+	<div class="form-group">
+		<label for="inputClass">Class</label>
+		<select ng-change="getStudentsFromClass()" ng-model="lesson.class_id" id="inputClass" required>
+			<option ng-repeat="option in classes" value="{{option._id}}">{{option.name}}</option>
+		</select>
+	</div>
+
+
+	
+
+	<div class="control-group">
+		<div class="controls options">
+			<button class="btn btn-primary" type="submit">Save</button>
+			<a class="btn btn-small btn-link" ng-href="#/students/{{student._id}}" href>Cancel</a>
+		</div>
+	</div>
+</form>-->

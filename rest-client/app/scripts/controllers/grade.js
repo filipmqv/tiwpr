@@ -1,4 +1,5 @@
 'use strict';
+/*jshint camelcase: false */
 
 /**
 * @ngdoc function

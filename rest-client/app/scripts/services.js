@@ -95,48 +95,13 @@ services.factory('TeacherService', function ($resource, $http, localStorageServi
 
 services.factory('TestsService', function ($resource, $http, localStorageService) {
   $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
-	return $resource(domainUrl + 'tests/:testId?where={"teacher_id": ":teacherId"}' , {testId:'@_id'}, {
-    get: {
-      method: 'GET',
-    },
-		update: {
-      method: 'PUT',
-      headers: {
-        'If-Match': 
-        function () {
-            return localStorageService.get('etag');
-        }
-      }
-    },
-    delete: {
-      method: 'DELETE', 
-      headers: {
-        'If-Match': 
-        function () {
-            return localStorageService.get('etag');
-        }
-      }
-    }
-	});
-});
-
-services.factory('StudentsService', function ($resource, $http, localStorageService) {
-  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
-  return $resource(domainUrl + 'students/:studentId?page=:n');
-});
-
-services.factory('GradesService', function ($resource, $http, localStorageService) {
-  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
-  return $resource(domainUrl + 'students/:studentId/grades/:gradeId?embedded={"test_id"::embed}' , {gradeId:'@_id', embed: '1'}, {
-    get: {
-      method: 'GET'
-    },
+  return $resource(domainUrl + 'tests/:testId?where={"teacher_id": ":teacherId"}' , {testId:'@_id'}, {
     update: {
       method: 'PUT',
       headers: {
         'If-Match': 
         function () {
-            return localStorageService.get('etag');
+          return localStorageService.get('etag');
         }
       }
     },
@@ -145,18 +110,93 @@ services.factory('GradesService', function ($resource, $http, localStorageServic
       headers: {
         'If-Match': 
         function () {
-            return localStorageService.get('etag');
+          return localStorageService.get('etag');
         }
       }
     }
   });
 });
 
+services.factory('StudentsService', function ($resource, $http, localStorageService) {
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
+  return $resource(domainUrl + 'students/:studentId?where={:whereObj}&page=:n');
+});
+
+services.factory('GradesService', function ($resource, $http, localStorageService) {
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
+  return $resource(domainUrl + 'students/:studentId/grades/:gradeId?embedded={"test_id"::embed}' , {gradeId:'@_id', embed: '1'}, {
+    update: {
+      method: 'PUT',
+      headers: {
+        'If-Match': 
+        function () {
+          return localStorageService.get('etag');
+        }
+      }
+    },
+    delete: {
+      method: 'DELETE', 
+      headers: {
+        'If-Match': 
+        function () {
+          return localStorageService.get('etag');
+        }
+      }
+    }
+  });
+});
+
+services.factory('LessonsService', function ($resource, $http, localStorageService) {
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
+  return $resource(domainUrl + 'lessons/:lessonId?embedded={:embObj}&'+
+    'where={:whereObj}&page=:n' , {lessonId:'@_id'}, {
+    });
+});
+
+services.factory('AttendancesService', function ($resource, $http, localStorageService) {
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
+  return $resource(domainUrl + 'students/:studentId/attendances/:attId?embedded={:embObj}&'+
+    'where={:whereObj}' , {attId:'@_id'}, {
+    });
+});
+
+services.factory('AttendancesCombinedService', function ($resource, $http, localStorageService) {
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
+  return $resource(domainUrl + 'attendances?embedded={:embObj}&where={:whereObj}' , {}, {
+    save: {
+      method: 'POST',
+      isArray: false
+    }
+  });
+});
+
+/*services.factory('AttendancesCombinedService', function ($resource, $http, localStorageService) {
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
+  return $resource(domainUrl + 'attendances'), {}, {
+    save: {
+      method: 'POST',
+      isArray: true
+    }
+  };
+});*/
 
 
 
 services.service('popupService',function($window) {
-    this.showPopup=function(message) {
-        return $window.confirm(message);
-    };
+  this.showPopup=function(message) {
+    return $window.confirm(message);
+  };
+});
+
+services.service('paginationService', function() {
+  this.paginationRange = function(total, perPage) {
+    var input = [];
+    for (var i = 1; i <= Math.ceil(total / perPage); i++) {
+      input.push(i);
+    }
+    return input;
+  };
+  this.maxPage = function(total, perPage) {
+    return Math.ceil(total / perPage);
+  };
 });

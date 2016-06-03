@@ -1,4 +1,5 @@
 'use strict';
+/*jshint camelcase: false */
 
 /**
 * @ngdoc function
@@ -9,7 +10,7 @@
 */
 var app = angular.module('restClientApp');
 
-app.controller('TestsCtrl', function ($scope, $window, TestsService, ClassesService, 
+app.controller('TestsCtrl', function ($scope, TestsService, ClassesService, 
 	SubjectsService, localStorageService, popupService) {
 
 	var clearVariables = function () {
