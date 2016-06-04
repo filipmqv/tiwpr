@@ -79,7 +79,7 @@ services.factory('UserService', function ($resource, $http, localStorageService)
 });
 
 services.factory('ClassesService', function ($resource, $http, localStorageService) {
-  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');//AuthService.getCredentials().then(function(data){return data});
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
   return $resource(domainUrl + 'classes');
 });
 
@@ -95,7 +95,8 @@ services.factory('TeacherService', function ($resource, $http, localStorageServi
 
 services.factory('TestsService', function ($resource, $http, localStorageService) {
   $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
-  return $resource(domainUrl + 'tests/:testId?where={"teacher_id": ":teacherId"}' , {testId:'@_id'}, {
+  return $resource(domainUrl + 'tests/:testId?embedded={:embObj}&where={"teacher_id": ":teacherId"}' , 
+    {testId:'@_id'}, {
     update: {
       method: 'PUT',
       headers: {
@@ -124,7 +125,8 @@ services.factory('StudentsService', function ($resource, $http, localStorageServ
 
 services.factory('GradesService', function ($resource, $http, localStorageService) {
   $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
-  return $resource(domainUrl + 'students/:studentId/grades/:gradeId?embedded={"test_id"::embed}' , {gradeId:'@_id', embed: '1'}, {
+  return $resource(domainUrl + 'students/:studentId/grades/:gradeId?embedded={"test_id"::embed}' , 
+        {gradeId:'@_id', embed: '1'}, {
     update: {
       method: 'PUT',
       headers: {
@@ -146,6 +148,16 @@ services.factory('GradesService', function ($resource, $http, localStorageServic
   });
 });
 
+services.factory('GradesCombinedService', function ($resource, $http, localStorageService) {
+  $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
+  return $resource(domainUrl + 'grades' , {}, {
+    saveBulk: {
+      method: 'POST',
+      isArray: false
+    }
+  });
+});
+
 services.factory('LessonsService', function ($resource, $http, localStorageService) {
   $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
   return $resource(domainUrl + 'lessons/:lessonId?embedded={:embObj}&'+
@@ -163,7 +175,7 @@ services.factory('AttendancesService', function ($resource, $http, localStorageS
 services.factory('AttendancesCombinedService', function ($resource, $http, localStorageService) {
   $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
   return $resource(domainUrl + 'attendances?embedded={:embObj}&where={:whereObj}' , {}, {
-    save: {
+    saveBulk: {
       method: 'POST',
       isArray: false
     }
@@ -183,7 +195,7 @@ services.factory('AttendancesCombinedService', function ($resource, $http, local
 
 
 services.service('popupService',function($window) {
-  this.showPopup=function(message) {
+  this.showPopup = function(message) {
     return $window.confirm(message);
   };
 });
@@ -198,5 +210,15 @@ services.service('paginationService', function() {
   };
   this.maxPage = function(total, perPage) {
     return Math.ceil(total / perPage);
+  };
+});
+
+services.service('clearFieldsService',function() {
+  this.clear = function(obj) {
+    delete obj._etag;
+    delete obj._created;
+    delete obj._updated;
+    delete obj._links;
+    return obj;
   };
 });

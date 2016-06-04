@@ -53,8 +53,16 @@ angular
         controller: 'TestEditCtrl'
       })
       .when('/tests/:id/grades', {
-        templateUrl: 'views/grades-add.html',
-        controller: 'TestAddGradesCtrl'
+        templateUrl: 'views/test-grades.html',
+        controller: 'TestGradesCtrl'
+      })
+      .when('/tests/:id/grades/add', {
+        templateUrl: 'views/test-grades-add.html',
+        controller: 'TestGradesAddCtrl'
+      })
+      .when('/tests/:id/grades/edit', {
+        templateUrl: 'views/test-grades-edit.html',
+        controller: 'TestGradesEditCtrl'
       })
 
       .when('/lessons', {

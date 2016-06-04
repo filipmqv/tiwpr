@@ -107,7 +107,7 @@ app.controller('LessonAddCtrl', function($scope, $routeParams, $location, $filte
 		
 		$scope.lesson.$save({teacherId:localStorageService.get('myId')}, function(data) {
 			prepareAttendancesObj(data._id);
-			AttendancesCombinedService.save($scope.attendancesObj, function() {
+			AttendancesCombinedService.saveBulk($scope.attendancesObj, function() {
 				$location.path('/lessons');
 			}, function (error) {
 				$scope.error = 'Error while creating attendances '+error.status +' '+ error.statusText;

@@ -1,0 +1,16 @@
+<h3>Test {{test.testdate | date:'yyyy-MM-dd'}}</h3>
+<h4 ng-cloak >Class: {{test.class_id.name}} &nbsp&nbsp|&nbsp&nbsp Subject: {{test.subject_id.name}} &nbsp&nbsp|&nbsp&nbsp Test: {{test.testtype}} / {{test.name}}</h4>
+
+<hr>
+
+<h3>Grades add form</h3>
+
+<hr>
+
+<div ng-show="error" class="alert alert-danger">
+	<p>{{error}}</p>
+</div>
+
+<form class="form-horizontal" role="form" ng-submit="addGrades()">
+	<div ng-include="'views/_test-grades-form.html'"></div>
+</form>

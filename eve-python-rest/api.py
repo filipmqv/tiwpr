@@ -50,6 +50,9 @@ def crossdomain(origin=None, methods=None, headers=None,
     return decorator
 # end of snippet for flask crossdomain
 
+
+
+
 class Authenticate(BasicAuth):
 	def check_auth(self, email, password, allowed_roles, resource, method):
 		#print "entering"
@@ -95,7 +98,12 @@ def login():
 		resp.status_code = 401
 		return resp
 
-
+def delete_grades(item):
+	grades = app.data.driver.db['grades']
+	ok = grades.remove({'test_id': item.get('_id')})
+	print "removing grades of this test"
+	print ok
 
 if __name__ == '__main__':
+	app.on_delete_item_tests += delete_grades
 	app.run(threaded=True)

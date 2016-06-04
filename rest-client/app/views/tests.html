@@ -25,10 +25,14 @@
 			<td ng-repeat="item in classes | filter:test.class_id">{{item.name}}</td>
 			<!--<td>{{ testStatus[test.status] }}</td>-->
 			<td>
-			<a ng-href="#/tests/{{test._id}}/edit"> <span class="glyphicon glyphicon-edit"
+			<a title="Edit" ng-href="#/tests/{{test._id}}/edit"> <span class="glyphicon glyphicon-edit"
 					aria-hidden="true"></span> </a>
-				<a href="" ng-click="deleteTest(test)"> <span class="glyphicon glyphicon-remove-circle"
-					aria-hidden="true"></span> </a>
+			&nbsp
+			<a ng-if="test.status==1" ng-href="#/tests/{{test._id}}/grades" title="Show grades"><i class="glyphicon glyphicon-star"></i></a>
+			<a ng-if="test.status==0" ng-href="#/tests/{{test._id}}/grades/add" title="Give grades"><i class="glyphicon glyphicon-star-empty"></i></a>
+			&nbsp
+			<a href title="Delete" ng-click="deleteTest(test)"> <span class="glyphicon glyphicon-remove-circle"
+				aria-hidden="true"></span> </a>
 			</td>
 		</tr>
 	</tbody>
