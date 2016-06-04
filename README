@@ -1,1 +1,3 @@
-init
+auth: Basic (not secure)
+almost no validation
+main aim of the project was to expose REST endpoints and use them
