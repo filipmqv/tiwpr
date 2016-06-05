@@ -150,7 +150,7 @@ services.factory('GradesService', function ($resource, $http, localStorageServic
 
 services.factory('GradesCombinedService', function ($resource, $http, localStorageService) {
   $http.defaults.headers.common.Authorization = 'Basic ' + localStorageService.get('credentials');
-  return $resource(domainUrl + 'grades' , {}, {
+  return $resource(domainUrl + 'grades?where={:whereObj}' , {}, {
     saveBulk: {
       method: 'POST',
       isArray: false

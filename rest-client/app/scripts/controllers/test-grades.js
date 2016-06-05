@@ -10,57 +10,59 @@
 */
 var app = angular.module('restClientApp');
 
-app.controller('TestGradesCtrl', function ($scope, TestsService, ClassesService, 
-	SubjectsService, localStorageService, popupService) {
+app.controller('TestGradesCtrl', function ($scope, $routeParams, TestsService, StudentsService, 
+		GradesCombinedService /*localStorageService, popupService*/) {
 
 	var clearVariables = function () {
-		$scope.tests = [];
-		$scope.classes = [];
-		$scope.subjects = [];
-		$scope.testStatus = ['zapowiedziany', 'oceniony'];
-		$scope.testTypes = ['short test', 'homework', 'essay'];
-		//0-zapowiedziany, 1-oceniony
+		$scope.test = {};
+		$scope.studentsGrades = [];
 	};
 
 	$scope.initController = function () {
 		clearVariables();
-		getClasses();
-		getSubjects();
-		getTests();
+		getTest();
 	};	
 
-	var getClasses = function () {
-		ClassesService.get(function (data) {
-			$scope.classes = data._items;
+	var getTest = function () {
+		TestsService.get({testId:$routeParams.id, embObj:'"class_id":1, "subject_id":1'}, function (data) {
+			$scope.test = data;
+			getStudentsFromClass();
 		});
 	};
 
-	var getSubjects = function () {
-		SubjectsService.get(function (data) {
-			$scope.subjects = data._items;
+	var getStudentsFromClass = function () {
+		StudentsService.get({whereObj:'"class_id":"'+$scope.test.class_id._id+'"'}, function (data) {
+			var students = data._items;
+			for (var i in students) {
+				var o = {};
+				o.student_id = students[i]._id;
+				o.firstname = students[i].firstname;
+				o.lastname = students[i].lastname;
+				o.registrynumber = students[i].registrynumber;
+				$scope.studentsGrades.push(o);
+			}
+			getGradesFromTest();
 		});
 	};
 
-	var getTests = function () {
-		TestsService.get({teacherId:localStorageService.get('myId')}, function (data) {
-			$scope.tests = data._items;
-			for (var i = 0; i < $scope.tests.length; i++) {
-				$scope.tests[i].testdate = new Date($scope.tests[i].testdate);
+	var getGradesFromTest = function () {
+		GradesCombinedService.get({whereObj:'"test_id":"'+$scope.test._id+'"'}, function (data) {
+			var grades = data._items;
+			for (var i in $scope.studentsGrades) {
+				for (var x in grades) {
+					if ($scope.studentsGrades[i].student_id === grades[x].student_id) {
+						$scope.studentsGrades[i].gradevalue = grades[x].gradevalue;
+						$scope.studentsGrades[i].grade_id = grades[x]._id;
+					}
+				}
 			}
 		});
 	};
 
-	$scope.deleteTest = function(test) {
-		if (popupService.showPopup('Really delete this?')) {
-			localStorageService.set('etag', test._etag);
-			TestsService.delete({teacherId:localStorageService.get('myId')}, test, function() {
-				getTests();
-			});
-		}
-	};
-
 	$scope.initController();
 });
+
+
 
 
 
@@ -91,7 +93,7 @@ app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $f
 	var getStudentsFromClass = function () {
 		StudentsService.get({whereObj:'"class_id":"'+$scope.test.class_id._id+'"'}, function (data) {
 			var students = data._items;
-			for (var i = 0; i < students.length; i++) {
+			for (var i in students) {
 				var o = {};
 				o.student_id = students[i]._id;
 				o.test_id = $scope.test.class_id._id;
@@ -106,7 +108,7 @@ app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $f
 	};
 
 	var prepareStudentsGradesObj = function () {
-		for (var i = 0; i < $scope.studentsGrades.length; i++) {
+		for (var i in $scope.studentsGrades) {
 			if ($scope.studentsGrades[i].gradevalue !== '' && $scope.studentsGrades[i].gradevalue !== undefined) {
 				var o = {};
 				o.student_id = $scope.studentsGrades[i].student_id;
@@ -135,7 +137,7 @@ app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $f
 			// post grades
 			prepareStudentsGradesObj();
 			GradesCombinedService.saveBulk($scope.studentsGradesObj, function() {
-				$location.path('/tests');
+				$location.path('/tests/'+$routeParams.id+'/grades');
 			}, function (error) {
 				$scope.error = 'Error while creating grades '+error.status +' '+ error.statusText;
 				console.log(error);
@@ -144,15 +146,6 @@ app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $f
 			$scope.error = 'Error while updating test '+error.status +' '+ error.statusText;
 			console.log(error);
 		});
-
-		/*$scope.test.teacher_id = localStorageService.get('myId');
-		$scope.test.status = 0;
-		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
-		clearUnnecessaryFields();
-
-		$scope.test.$save({teacherId:localStorageService.get('myId')}, function() {
-			$location.path('/tests');
-		});*/
 	};	
 
 	$scope.initController();
@@ -160,70 +153,13 @@ app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $f
 
 
 
+
+/*
+
+TODO ###################
+
 app.controller('TestGradesEditCtrl', function($scope, $routeParams, $location, $filter, TestsService, 
 	ClassesService, SubjectsService, localStorageService) {
 
-	var clearVariables = function () {
-		$scope.buttonText = 'Save';
-		$scope.error = '';
-		$scope.test = {};
-		$scope.classes = [];
-		$scope.subjects = [];
-		$scope.testStatus = ['zapowiedziany', 'oceniony'];
-		$scope.testTypes = ['short test', 'homework', 'essay']; //0-zapowiedziany, 1-oceniony
-	};
-
-	$scope.initController = function () {
-		clearVariables();
-		getClasses();
-		getSubjects();
-		getTest();
-	};
-
-	var getClasses = function () {
-		ClassesService.get(function (data) {
-			$scope.classes = data._items;
-		});
-	};
-
-	var getSubjects = function () {
-		SubjectsService.get(function (data) {
-			$scope.subjects = data._items;
-		});
-	};
-
-	var getTest = function () {
-		TestsService.get({testId:$routeParams.id, teacherId:localStorageService.get('myId')}, function (data) {
-			$scope.test = data;
-			$scope.picker = new Date(data.testdate);
-			localStorageService.set('etag', $scope.test._etag);
-		});
-	};
-
-	var clearUnnecessaryFields = function () {
-		delete $scope.test._etag;
-		delete $scope.test._created;
-		delete $scope.test._updated;
-		delete $scope.test._links;
-	};
-
-	$scope.updateTest = function() {
-		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
-		clearUnnecessaryFields();
-
-		TestsService.update({teacherId:localStorageService.get('myId')}, $scope.test, function() {
-			localStorageService.remove('etag');
-			$location.path('/tests');
-		}, function (error) {
-			if (error.status === 412) {
-				$scope.error = 'You do not update the newest data. Refresh page and try again.';
-			}
-			else if (error.status === 422) {
-				$scope.error = 'Incorrect data';
-			}
-			console.log(error);
-		});
-	};
-
-	$scope.initController();
-});
+	
+});*/

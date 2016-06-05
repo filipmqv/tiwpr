@@ -1,0 +1,27 @@
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Name</td>
+			<td>Registry No</td>
+			<td>Grade</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="person in studentsGrades">
+			<td>{{ person.firstname }} {{ person.lastname }}</td>
+			<td>{{ person.registrynumber }}</td>
+			<td>
+				<select ng-model="person.gradevalue">
+					<option ng-repeat="option in allowedGrades" value="{{option}}">{{option}}</option>
+				</select>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="control-group">
+	<div class="controls options">
+		<button class="btn btn-primary" type="submit">{{buttonText}}</button>
+		<a class="btn btn-small btn-link" ng-href="#/tests" href>Cancel</a>
+	</div>
+</div>

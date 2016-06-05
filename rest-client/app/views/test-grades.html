@@ -1,0 +1,26 @@
+<h3>Test {{test.testdate | date:'yyyy-MM-dd'}}</h3>
+<h4 ng-cloak >Class: {{test.class_id.name}} &nbsp&nbsp|&nbsp&nbsp Subject: {{test.subject_id.name}} &nbsp&nbsp|&nbsp&nbsp Test: {{test.testtype}} / {{test.name}}</h4>
+
+<hr>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td>Name</td>
+			<td>Registry No</td>
+			<td>Grade</td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="person in studentsGrades">
+			<td>{{ person.firstname }} {{ person.lastname }}</td>
+			<td>{{ person.registrynumber }}</td>
+			<td>{{ person.gradevalue }}</td>
+			<td>
+			<a ng-show="person.grade_id" ng-href="#/students/{{person.student_id}}/grades/{{person.grade_id}}"><i class="glyphicon glyphicon-edit"></i></a>
+			<a ng-hide="person.grade_id" ng-href="#/students/{{person.student_id}}/grades/new/{{test._id}}"><i class="glyphicon glyphicon-edit"></i></a>
+			</td>
+		</tr>
+	</tbody>
+</table>

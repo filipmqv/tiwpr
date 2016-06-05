@@ -11,7 +11,7 @@
 var app = angular.module('restClientApp');
 
 app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsService, ClassesService, 
-    SubjectsService, GradesService, UserService, localStorageService, popupService) {
+    SubjectsService, GradesService, UserService, localStorageService, popupService, clearFieldsService) {
 
     var clearVariables = function () {
         $scope.gradevalue = '';
@@ -66,13 +66,6 @@ app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsS
         });
     };
 
-    var clearUnnecessaryFields = function () {
-        delete $scope.grade._etag;
-        delete $scope.grade._created;
-        delete $scope.grade._updated;
-        delete $scope.grade._links;
-    };
-
     $scope.switchToEditMode = function () {
         localStorageService.set('etag', $scope.grade._etag);
         $scope.gradeOption = $scope.grade.gradevalue;
@@ -86,7 +79,7 @@ app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsS
     $scope.updateGrade = function() {
         var tempGrade = $scope.grade.gradevalue;
         $scope.grade.gradevalue = $scope.gradeOption;
-        clearUnnecessaryFields();
+        $scope.grade = clearFieldsService.clear($scope.grade);
 
         GradesService.update({studentId:$routeParams.id, embed:0}, $scope.grade, function(data) {
             localStorageService.remove('etag');
@@ -121,7 +114,7 @@ app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsS
 
 
 app.controller('GradeAddCtrl', function ($scope, $location, $routeParams, StudentsService, ClassesService, 
-    SubjectsService, TestsService, GradesService, UserService, localStorageService) {
+    SubjectsService, TestsService, GradesService, UserService, localStorageService, clearFieldsService) {
 
     var clearVariables = function () {
         $scope.error = '';
@@ -130,14 +123,22 @@ app.controller('GradeAddCtrl', function ($scope, $location, $routeParams, Studen
         $scope.student = {};
         $scope.tests = [];
         $scope.subjects = [];
+        $scope.classes = [];
+        $scope.specificTest = false;
         $scope.allowedGrades = ['1', '1+', '2-', '2', '2+', '3-', '3', '3+', '4-', '4', '4+', '5-', '5', '5+', '6-', '6', '6+'];
     };
 
     $scope.initController = function () {
         clearVariables();
-        getSubjects();
-        getTests();
         getStudent();
+        getClasses();
+        if ($routeParams.optionalTestId !== undefined) {
+            $scope.optionalTestId = $routeParams.optionalTestId;
+            getTest();
+        } else {
+            getSubjects();
+            getTests();
+        }
     };
 
     var getSubjects = function () {
@@ -152,26 +153,75 @@ app.controller('GradeAddCtrl', function ($scope, $location, $routeParams, Studen
         });
     };
 
+    var getClasses = function () {
+        ClassesService.get(function (data) {
+            $scope.classes = data._items;
+        });
+    };
+
     var getTests = function () {
         TestsService.get({teacherId:localStorageService.get('myId')}, function (data) {
             $scope.tests = data._items;
         });
     };
 
-    $scope.showTest = function(option){
-        return option.subject_id === $scope.subject && 
-            option.class_id === $scope.student.class_id;
+    var getTest = function () {
+        TestsService.get({testId:$routeParams.optionalTestId, teacherId:localStorageService.get('myId'), 
+            embObj:'"subject_id":1'}, function (data) {
+                $scope.specificTest = true;
+                $scope.subject = data.subject_id.name;
+                $scope.tests.push(data);
+                $scope.grade.test_id = $scope.tests[0]._id;
+            });
     };
 
-    $scope.addGrade = function () {
-        $scope.error = '';
+    $scope.showTest = function(option){
+        return option.subject_id === $scope.subject && 
+        option.class_id === $scope.student.class_id;
+    };
+
+    function getThisTest() {
+        for (var i in $scope.tests) {
+            if ($scope.grade.test_id === $scope.tests[i]._id) {
+                return $scope.tests[i];
+            }
+        }
+        //$scope.grade.test_id === 
+    }
+
+    var addGradeMethod = function() {
         $scope.grade.student_id = $routeParams.id;
         $scope.grade.$save({studentId:$routeParams.id, embed:0}, function() {
-            $location.path('/students/'+$routeParams.id);
+            if ($scope.specificTest === true) {
+                $location.path('/tests/'+$routeParams.optionalTestId+'/grades');
+            } else {
+                $location.path('/students/'+$routeParams.id);
+            }
         }, function (error) {
             $scope.error = 'Error '+error.status +' '+ error.statusText;
             console.log(error);
         });
+    };
+
+    $scope.addGrade = function () {
+        $scope.error = '';
+        // if test.status == 0 -> change to 1, add grade if success
+        var thisTest = getThisTest();
+        if (thisTest.status === 0) {
+            thisTest.status = 1;
+            localStorageService.set('etag', thisTest._etag);
+            thisTest = clearFieldsService.clear(thisTest);
+            TestsService.update({teacherId:localStorageService.get('myId')}, thisTest, function() {
+                localStorageService.remove('etag');
+                addGradeMethod();
+            }, function (error) {
+                $scope.error = 'Error while updating test '+error.status +' '+ error.statusText;
+                console.log(error);
+            });
+        } else {
+            // add grade immediately
+            addGradeMethod();
+        }     
     };
 
     $scope.initController();

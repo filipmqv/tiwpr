@@ -60,10 +60,10 @@ angular
         templateUrl: 'views/test-grades-add.html',
         controller: 'TestGradesAddCtrl'
       })
-      .when('/tests/:id/grades/edit', {
+      /*.when('/tests/:id/grades/edit', {
         templateUrl: 'views/test-grades-edit.html',
         controller: 'TestGradesEditCtrl'
-      })
+      })*/
 
       .when('/lessons', {
         templateUrl: 'views/lessons.html',
@@ -87,6 +87,10 @@ angular
         controller: 'StudentCtrl'
       })
       .when('/students/:id/grades/new', {
+        templateUrl: 'views/grade-add.html',
+        controller: 'GradeAddCtrl'
+      })
+      .when('/students/:id/grades/new/:optionalTestId', {
         templateUrl: 'views/grade-add.html',
         controller: 'GradeAddCtrl'
       })

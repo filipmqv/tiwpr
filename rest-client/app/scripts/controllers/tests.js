@@ -17,9 +17,8 @@ app.controller('TestsCtrl', function ($scope, TestsService, ClassesService,
 		$scope.tests = [];
 		$scope.classes = [];
 		$scope.subjects = [];
-		$scope.testStatus = ['zapowiedziany', 'oceniony'];
+		//$scope.testStatus = ['zapowiedziany', 'oceniony'];
 		$scope.testTypes = ['short test', 'homework', 'essay'];
-		//0-zapowiedziany, 1-oceniony
 	};
 
 	$scope.initController = function () {
@@ -123,6 +122,7 @@ app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter
 	ClassesService, SubjectsService, localStorageService) {
 
 	var clearVariables = function () {
+		$scope.editMode = true;
 		$scope.buttonText = 'Save';
 		$scope.error = '';
 		$scope.test = {};

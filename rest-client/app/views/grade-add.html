@@ -1,5 +1,10 @@
+<h3>{{ student.firstname }} {{ student.lastname }}</h3>
+<h4 ng-cloak ng-repeat="item in classes | filter:student.class_id">Class: {{item.name}} &nbsp&nbsp|&nbsp&nbsp No: {{ student.registrynumber }}</h4>
+
+<hr>
 <h3>Grade add form</h3>
 <hr>
+
 <div ng-show="error" class="alert alert-danger">
     <p>{{error}}</p>
 </div>
@@ -13,24 +18,33 @@
 		</select>
 	</div>
 
-	<div class="form-group">
+	<div ng-hide="specificTest" class="form-group">
 		<label for="inputSubject">Subject</label>
 		<select ng-model="subject" id="inputSubject" required>
 			<option ng-repeat="option in subjects" value="{{option._id}}">{{option.name}}</option>
 		</select>
 	</div>
+	<div ng-show="specificTest" class="form-group">
+		<label for="inputSubject">Subject</label>
+		<span>{{subject}}</span>
+	</div>
 
-	<div class="form-group">
+	<div ng-hide="specificTest" class="form-group">
 		<label for="inputTest">Test</label>
 		<select ng-model="grade.test_id" id="inputTest" required>
 			<option ng-repeat="option in tests | filter:showTest" value="{{option._id}}">{{option.testtype}} / {{option.name}}</option>
 		</select>
 	</div>
+	<div ng-show="specificTest" class="form-group">
+		<label for="inputSubject">Test</label>
+		<span>{{tests[0].testtype}} / {{tests[0].name}}</span>
+	</div>
 
 	<div class="control-group">
 		<div class="controls options">
 			<button class="btn btn-primary" type="submit">Save</button>
-			<a class="btn btn-small btn-link" ng-href="#/students/{{student._id}}" href>Cancel</a>
+			<a ng-hide="specificTest" class="btn btn-small btn-link" ng-href="#/students/{{student._id}}" href>Cancel</a>
+			<a ng-show="specificTest" class="btn btn-small btn-link" ng-href="#/tests/{{optionalTestId}}/grades" href>Cancel</a>
 		</div>
 	</div>
 </form>
