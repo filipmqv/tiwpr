@@ -59,7 +59,7 @@
  		attendanceObj._id = $scope.attendance._id;
  		attendanceObj.student_id = $scope.student._id;
  		attendanceObj.lesson_id = $scope.attendance.lesson_id._id;
- 		attendanceObj.status = 'justified'
+ 		attendanceObj.status = 'justified';
  		attendanceObj.justification = $scope.attendance.justification;
  		Session.putEtag($scope.attendance._etag);
  		AttendancesService.update({studentId:$routeParams.id}, attendanceObj, function () {

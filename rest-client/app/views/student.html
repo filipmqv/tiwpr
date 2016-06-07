@@ -5,7 +5,7 @@
 
 <div class="">
 	<h4 style="display: inline;">Grades</h4>
-	<a ng-href="#/students/{{student._id}}/grades/new" class="btn btn-primary btn-new-item">Add New Grade</a>
+	<a ng-if="currentUser.role===userRoles.teacher" ng-href="#/students/{{student._id}}/grades/new" class="btn btn-primary btn-new-item">Add New Grade</a>
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -30,7 +30,7 @@
 
 <div class="">
 	<h4 style="display: inline;">Attendances</h4>
-	<div class="dropdown">
+	<!--<div class="dropdown">
 		<button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			Dropdown trigger
 			<span class="caret"></span>
@@ -38,7 +38,7 @@
 		<ul class="dropdown-menu" aria-labelledby="dLabel">
 			<li>dfgf</li>
 		</ul>
-	</div>
+	</div>-->
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -54,9 +54,8 @@
 				<td>
 					{{object.status}}&nbsp
 					<i ng-if="object.status=='absent'" class="glyphicon glyphicon-remove-sign"></i>
-					<i ng-if="object.status=='justified'" class="glyphicon glyphicon-ok-circle"></i>&nbsp
-					<a ng-if="object.status=='absent'" ng-href="#/students/{{student._id}}/attendances/{{object._id}}"> <span class="glyphicon glyphicon-edit"
-					aria-hidden="true"></span> </a>
+					<i ng-if="object.status=='justified'" ng-attr-title="{{object.justification}}" class="glyphicon glyphicon-ok-circle"></i>&nbsp
+					<a ng-if="object.status=='absent' && currentUser.role===userRoles.parent" ng-href="#/students/{{student._id}}/attendances/{{object._id}}"> <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> </a>
 				</td>
 			</tr>
 		</tbody>

@@ -7,7 +7,7 @@
 </div>
 
 <div>
-	<ul ng-hide="editMode" class="list-inline">
+	<ul ng-if="currentUser.role===userRoles.teacher" ng-hide="editMode" class="list-inline">
 	<li><a href ng-click="switchToEditMode()" class="btn btn-primary">Edit Grade</a></li>
 	<li><a href ng-click="deleteGrade(grade)" class="btn btn-primary">Delete Grade</a></li>
 	</ul>

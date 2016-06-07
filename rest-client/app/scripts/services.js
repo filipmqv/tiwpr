@@ -110,6 +110,10 @@ services.factory('UserService', function ($resource) {
   return $resource(domainUrl + 'users/:userId');
 });
 
+services.factory('ChildrenService', function ($resource) {
+  return $resource(domainUrl + 'users/:userId?embedded={"children_id":1}');
+});
+
 services.factory('ClassesService', function ($resource) {
   return $resource(domainUrl + 'classes');
 });

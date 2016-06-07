@@ -79,28 +79,28 @@ angular
         templateUrl: 'views/test-add.html',
         controller: 'TestAddCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/tests/:id/edit', {
         templateUrl: 'views/test-edit.html',
         controller: 'TestEditCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/tests/:id/grades', {
         templateUrl: 'views/test-grades.html',
         controller: 'TestGradesCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/tests/:id/grades/add', {
         templateUrl: 'views/test-grades-add.html',
         controller: 'TestGradesAddCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
 
@@ -108,21 +108,21 @@ angular
         templateUrl: 'views/lessons.html',
         controller: 'LessonsCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/lessons/new', {
         templateUrl: 'views/lesson-add.html',
         controller: 'LessonAddCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/lessons/:lessonId', {
         templateUrl: 'views/lesson.html',
         controller: 'LessonCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
 
@@ -130,7 +130,7 @@ angular
         templateUrl: 'views/students.html',
         controller: 'StudentsCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/students/:id', {
@@ -144,14 +144,14 @@ angular
         templateUrl: 'views/grade-add.html',
         controller: 'GradeAddCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/students/:id/grades/new/:optionalTestId', {
         templateUrl: 'views/grade-add.html',
         controller: 'GradeAddCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher]
         }
       })
       .when('/students/:id/grades/:gradeId', {
@@ -165,7 +165,7 @@ angular
         templateUrl: 'views/justification.html',
         controller: 'JustificationCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.all]
+          authorizedRoles: [USER_ROLES.teacher, USER_ROLES.parent]
         }
       })
       

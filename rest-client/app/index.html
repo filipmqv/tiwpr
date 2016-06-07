@@ -47,16 +47,17 @@
             </ul>
 
             <ul ng-if="currentUser.role===userRoles.student" class="nav navbar-nav">
-              <li><a ng-href="#/tests">Tests</a></li> fdsdfbj     TODO    $$$$$$$$$$
+              <li><a ng-href="#/students/{{currentUser.id}}">Grades & attendances</a></li>
             </ul>
 
-            <ul ng-if="currentUser.role===userRoles.parent" class="nav navbar-nav">
-              <li><a ng-href="#/tests">Tests</a></li>v     TODO     ddgdfg
+            <ul ng-if="currentUser.role===userRoles.parent" ng-repeat="child in children"class="nav navbar-nav">
+              <li><a ng-href="#/students/{{child._id}}" ng-attr-title="{{child.firstname}} {{child.lastname}}, No: {{child.registrynumber}}">{{child.firstname}}</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
               <li><a ng-if="currentUser.role===userRoles.student" ng-href="#/students/{{currentUser.id}}">Student, {{currentUser.firstname}}</a></li>
               <li><a ng-if="currentUser.role===userRoles.teacher" ng-href="#/teacher">Teacher, {{currentUser.firstname}}</a></li>
+              <li><a ng-if="currentUser.role===userRoles.parent" ng-href="#/teacher">Parent, {{currentUser.firstname}}</a></li>
               <li><a ng-hide="currentUser.id" ng-href="#/login">Login</a></li>
               <li><a ng-show="currentUser.id" href ng-click="logoutClick()">Logout</a></li>
             </ul>
