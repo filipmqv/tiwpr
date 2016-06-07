@@ -13,7 +13,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="person in attendances">
-			<td>{{ person.student_id.firstname }} {{ person.student_id.lastname }}</td>
+			<td><a ng-href="#/students/{{person.student_id._id}}">{{ person.student_id.firstname }} {{ person.student_id.lastname }}</a></td>
 			<td>{{ person.student_id.registrynumber }}</td>
 			<td>
 				{{ person.status }}&nbsp
