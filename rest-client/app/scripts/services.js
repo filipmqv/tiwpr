@@ -12,7 +12,7 @@ services.config(function ($httpProvider) {
     function ($injector) {
       return $injector.get('AuthInterceptor');
     }
-  ]);
+    ]);
 });
 
 services.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
@@ -76,10 +76,9 @@ services.factory('AuthService', function ($http, Session, localStorageService) {
       //$scope.setCurrentUser(user);
       return user;
     } else {
-      console.log('init - no auth')
       return null;
     }
-  }
+  };
 
   return authService;
 });
@@ -87,10 +86,10 @@ services.factory('AuthService', function ($http, Session, localStorageService) {
 services.service('Session', function () {
   this.putEtag = function (etag) {
     this.etag = etag;
-  }
+  };
   this.removeEtag = function () {
     this.etag = null;
-  }
+  };
   this.create = function (userId, userFirstname, userAuth, userRole) {
     this.userId = userId;
     this.userFirstname = userFirstname;
@@ -190,9 +189,18 @@ services.factory('LessonsService', function ($resource) {
     });
 });
 
-services.factory('AttendancesService', function ($resource) {
+services.factory('AttendancesService', function ($resource, Session) {
   return $resource(domainUrl + 'students/:studentId/attendances/:attId?embedded={:embObj}&'+
-    'where={:whereObj}' , {attId:'@_id'}, {
+    'where={:whereObj}&page=:n' , {attId:'@_id'}, {
+      update: {
+        method: 'PUT',
+        headers: {
+          'If-Match': 
+          function () {
+            return Session.etag;
+          }
+        }
+      }
     });
 });
 
@@ -233,5 +241,23 @@ services.service('clearFieldsService',function() {
     delete obj._updated;
     delete obj._links;
     return obj;
+  };
+});
+
+services.service('dateRangeService', function() {
+  Date.prototype.addDays = function(days) {
+    var dat = new Date(this.valueOf());
+    dat.setDate(dat.getDate() + days);
+    return dat;
+  };
+
+  this.getDates = function (startDate, stopDate) {
+    var dateArray = [];
+    var currentDate = startDate;
+    while (currentDate <= stopDate) {
+      dateArray.push( new Date (currentDate) );
+      currentDate = currentDate.addDays(1);
+    }
+    return dateArray;
   };
 });

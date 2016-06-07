@@ -234,18 +234,27 @@ attendances_schema = {
         'type': 'string',
         'allowed': ["absent", "present", "justified"], #nieobecny (czyli nieuspr.), obecny, usprawiedliwony
         'required': True
+    },
+    'justification': {
+        'type': 'string'
     }
 }
 
 attendances = {
     'item_title': 'attendance',
-    'schema': attendances_schema
+    'schema': attendances_schema,
+    'datasource': {
+        'default_sort': [('lesson_id', -1)]
+    }
 }
 
 students_attendances = {
     'url': 'students/<regex("[a-f0-9]{24}"):student_id>/attendances',
     'schema': attendances_schema,
-    "datasource": {"source": "attendances"},
+    "datasource": {
+        "source": "attendances",
+        'default_sort': [('lesson_id', -1)]
+    },
     'hateoas': False
 }
 

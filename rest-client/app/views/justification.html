@@ -1,0 +1,36 @@
+<h3>{{ student.firstname }} {{ student.lastname }}</h3>
+<h4 ng-cloak ng-repeat="item in classes | filter:student.class_id">Class: {{item.name}} &nbsp&nbsp|&nbsp&nbsp No: {{ student.registrynumber }}</h4>
+
+<hr>
+<h3>Justification add form</h3>
+<hr>
+{{attendance}}
+<div ng-show="error" class="alert alert-danger">
+	<p>{{error}}</p>
+</div>
+
+<form class="form-horizontal" role="form" ng-submit="updateAttendance()">
+
+	<div class="form-group">
+		<label>Date</label>
+		<span>{{attendance.lesson_id.lessondate | date:'yyyy-MM-dd'}}</span>
+	</div>
+
+	<div class="form-group">
+		<label>Subject</label>
+		<span ng-repeat="item in subjects | filter:attendance.lesson_id.subject_id">{{item.name}}
+	</div>
+
+	<div class="form-group">
+		<label for="inputGradeValue">Justification</label>
+		<textarea rows="4" cols="50" placeholder="Write your justification here..." ng-model="attendance.justification"></textarea>
+	</div>
+
+
+	<div class="control-group">
+		<div class="controls options">
+			<button class="btn btn-primary" type="submit">Save</button>
+			<a class="btn btn-small btn-link" ng-href="#/tests/{{optionalTestId}}/grades" href>Cancel</a>
+		</div>
+	</div>
+</form>

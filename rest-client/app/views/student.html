@@ -29,5 +29,36 @@
 <hr>
 
 <div class="">
-	<h4>Attendances</h4>
+	<h4 style="display: inline;">Attendances</h4>
+	<div class="dropdown">
+		<button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Dropdown trigger
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dLabel">
+			<li>dfgf</li>
+		</ul>
+	</div>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<td>Date</td>
+				<td>Subject</td>
+				<td>Attendance</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="object in attendances">
+				<td>{{ object.lesson_id.lessondate | date:'yyyy-MM-dd' }}</td>
+				<td ng-repeat="item in subjects | filter:object.lesson_id.subject_id">{{item.name}}</td>
+				<td>
+					{{object.status}}&nbsp
+					<i ng-if="object.status=='absent'" class="glyphicon glyphicon-remove-sign"></i>
+					<i ng-if="object.status=='justified'" class="glyphicon glyphicon-ok-circle"></i>&nbsp
+					<a ng-if="object.status=='absent'" ng-href="#/students/{{student._id}}/attendances/{{object._id}}"> <span class="glyphicon glyphicon-edit"
+					aria-hidden="true"></span> </a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

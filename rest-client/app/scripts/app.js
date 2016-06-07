@@ -161,6 +161,13 @@ angular
           authorizedRoles: [USER_ROLES.all]
         }
       })
+      .when('/students/:id/attendances/:attendanceId', {
+        templateUrl: 'views/justification.html',
+        controller: 'JustificationCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
+      })
       
 
       .otherwise({

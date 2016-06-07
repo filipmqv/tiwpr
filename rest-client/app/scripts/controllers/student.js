@@ -1,4 +1,5 @@
 'use strict';
+/*jshint camelcase: false */
 
 /**
  * @ngdoc function
@@ -10,13 +11,14 @@
  var app = angular.module('restClientApp');
 
  app.controller('StudentCtrl', function ($scope, $routeParams, StudentsService, ClassesService, 
- 	SubjectsService, GradesService) {
+ 	SubjectsService, GradesService, AttendancesService) {
 
  	var clearVariables = function () {
  		$scope.student = {};
  		$scope.grades = [];
  		$scope.subjects = [];
  		$scope.classes = [];
+ 		$scope.attendances = [];
  	};
 
  	$scope.initController = function () {
@@ -25,6 +27,7 @@
  		getSubjects();
  		getStudent();
  		getGrades();
+ 		getAttendances();
  	};
 
  	var getClasses = function () {
@@ -34,22 +37,28 @@
  	};
 
  	var getStudent = function () {
-		StudentsService.get({studentId:$routeParams.id}, function (data) {
-			$scope.student = data;
-		});
-	};
+ 		StudentsService.get({studentId:$routeParams.id}, function (data) {
+ 			$scope.student = data;
+ 		});
+ 	};
 
-	var getSubjects = function () {
-		SubjectsService.get(function (data) {
-			$scope.subjects = data._items;
-		});
-	};
+ 	var getSubjects = function () {
+ 		SubjectsService.get(function (data) {
+ 			$scope.subjects = data._items;
+ 		});
+ 	};
 
-	var getGrades = function () {
-		GradesService.get({studentId:$routeParams.id}, function (data) {
-			$scope.grades = data._items;
-		});
-	};
-	
+ 	var getGrades = function () {
+ 		GradesService.get({studentId:$routeParams.id}, function (data) {
+ 			$scope.grades = data._items;
+ 		});
+ 	};
+
+ 	var getAttendances = function () {
+ 		AttendancesService.get({studentId:$routeParams.id, embObj:'"lesson_id":1'}, function (data) {
+ 			$scope.attendances = data._items;
+ 		});
+ 	};
+
  	$scope.initController();
  });
