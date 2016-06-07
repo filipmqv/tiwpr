@@ -17,13 +17,13 @@
     <link rel="stylesheet" href="styles/my.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="restClientApp" ng-cloak>
+  <body ng-app="restClientApp" ng-controller="ApplicationController" ng-cloak>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div  ng-controller="LoginCtrl" class="header">
+    <div class="header">
       <div class="navbar navbar-inverse" role="navigation">
         <div class="container">
           <div class="navbar-header">
@@ -40,17 +40,22 @@
 
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
 
-            <ul class="nav navbar-nav">
-              <!--<li><a href="#/">Home</a></li>-->
-              <li><a ng-if="role=='teacher'" ng-href="#/tests">Tests</a></li>
-              <li><a ng-if="role=='teacher'" ng-href="#/lessons">Lessons</a></li>
-              <li><a ng-if="role=='teacher'" ng-href="#/students">Students</a></li>
+            <ul ng-if="currentUser.role===userRoles.teacher" class="nav navbar-nav">
+              <li><a ng-href="#/tests">Tests</a></li>
+              <li><a ng-href="#/lessons">Lessons</a></li>
+              <li><a ng-href="#/students">Students</a></li>
+            </ul>
+            <ul ng-if="currentUser.role===userRoles.student" class="nav navbar-nav">
+              <li><a ng-href="#/tests">Tests</a></li> fdsdfbj     TODO    $$$$$$$$$$
+            </ul>
+            <ul ng-if="currentUser.role===userRoles.parent" class="nav navbar-nav">
+              <li><a ng-href="#/tests">Tests</a></li>v     TODO     ddgdfg
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <li><a ng-if="role=='student'" ng-href="#/students/{{myId}}">Student, {{user.firstname}}</a></li>
-              <li><a ng-if="role=='teacher'" ng-href="#/teacher">Teacher, {{user.firstname}}</a></li>
-              <li><a ng-hide="isLoggedIn" ng-href="#/login">Login</a></li>
-              <li><a ng-show="isLoggedIn" href ng-click="logout()">Logout</a></li>
+              <li><a ng-if="currentUser.role===userRoles.student" ng-href="#/students/{{myId}}">Student, {{currentUser.firstname}}</a></li>
+              <li><a ng-if="currentUser.role===userRoles.teacher" ng-href="#/teacher">Teacher, {{currentUser.firstname}}</a></li>
+              <li><a ng-hide="currentUser.id" ng-href="#/login">Login</a></li>
+              <li><a ng-show="currentUser.id" href ng-click="logoutClick()">Logout</a></li>
             </ul>
           </div>
         </div>
@@ -100,6 +105,7 @@
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/about.js"></script>
     <script src="scripts/controllers/login.js"></script>
+    <script src="scripts/controllers/application.js"></script>
     <script src="scripts/controllers/student.js"></script>
     <script src="scripts/controllers/teacher.js"></script>
     <script src="scripts/controllers/tests.js"></script>

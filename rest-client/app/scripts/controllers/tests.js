@@ -11,13 +11,12 @@
 var app = angular.module('restClientApp');
 
 app.controller('TestsCtrl', function ($scope, TestsService, ClassesService, 
-	SubjectsService, localStorageService, popupService) {
+	SubjectsService, Session, popupService) {
 
 	var clearVariables = function () {
 		$scope.tests = [];
 		$scope.classes = [];
 		$scope.subjects = [];
-		//$scope.testStatus = ['zapowiedziany', 'oceniony'];
 		$scope.testTypes = ['short test', 'homework', 'essay'];
 	};
 
@@ -41,7 +40,7 @@ app.controller('TestsCtrl', function ($scope, TestsService, ClassesService,
 	};
 
 	var getTests = function () {
-		TestsService.get({teacherId:localStorageService.get('myId')}, function (data) {
+		TestsService.get({teacherId:$scope.currentUser.id}, function (data) {
 			$scope.tests = data._items;
 			for (var i = 0; i < $scope.tests.length; i++) {
 				$scope.tests[i].testdate = new Date($scope.tests[i].testdate);
@@ -51,8 +50,9 @@ app.controller('TestsCtrl', function ($scope, TestsService, ClassesService,
 
 	$scope.deleteTest = function(test) {
 		if (popupService.showPopup('Really delete this?')) {
-			localStorageService.set('etag', test._etag);
-			TestsService.delete({teacherId:localStorageService.get('myId')}, test, function() {
+			Session.putEtag(test._etag);
+			TestsService.delete({teacherId:$scope.currentUser.id}, test, function() {
+				Session.removeEtag();
 				getTests();
 			});
 		}
@@ -64,7 +64,7 @@ app.controller('TestsCtrl', function ($scope, TestsService, ClassesService,
 
 
 app.controller('TestAddCtrl', function($scope, $routeParams, $location, $filter, TestsService, ClassesService, 
-	SubjectsService, localStorageService) {
+	SubjectsService) {
 
 	var clearVariables = function () {
 		$scope.buttonText = 'Add';
@@ -103,12 +103,12 @@ app.controller('TestAddCtrl', function($scope, $routeParams, $location, $filter,
 	};
 
 	$scope.addTest = function() { 
-		$scope.test.teacher_id = localStorageService.get('myId');
+		$scope.test.teacher_id = $scope.currentUser.id;
 		$scope.test.status = 0;
 		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
 		clearUnnecessaryFields();
 
-		$scope.test.$save({teacherId:localStorageService.get('myId')}, function() {
+		$scope.test.$save({teacherId:$scope.currentUser.id}, function() {
 			$location.path('/tests');
 		});
 	};	
@@ -119,7 +119,7 @@ app.controller('TestAddCtrl', function($scope, $routeParams, $location, $filter,
 
 
 app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter, TestsService, 
-	ClassesService, SubjectsService, localStorageService) {
+	ClassesService, SubjectsService, Session) {
 
 	var clearVariables = function () {
 		$scope.editMode = true;
@@ -128,7 +128,6 @@ app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter
 		$scope.test = {};
 		$scope.classes = [];
 		$scope.subjects = [];
-		$scope.testStatus = ['zapowiedziany', 'oceniony'];
 		$scope.testTypes = ['short test', 'homework', 'essay']; //0-zapowiedziany, 1-oceniony
 	};
 
@@ -152,10 +151,10 @@ app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter
 	};
 
 	var getTest = function () {
-		TestsService.get({testId:$routeParams.id, teacherId:localStorageService.get('myId')}, function (data) {
+		TestsService.get({testId:$routeParams.id, teacherId:$scope.currentUser.id}, function (data) {
 			$scope.test = data;
 			$scope.picker = new Date(data.testdate);
-			localStorageService.set('etag', $scope.test._etag);
+			Session.putEtag($scope.test._etag);
 		});
 	};
 
@@ -170,8 +169,8 @@ app.controller('TestEditCtrl', function($scope, $routeParams, $location, $filter
 		$scope.test.testdate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
 		clearUnnecessaryFields();
 
-		TestsService.update({teacherId:localStorageService.get('myId')}, $scope.test, function() {
-			localStorageService.remove('etag');
+		TestsService.update({teacherId:$scope.currentUser.id}, $scope.test, function() {
+			Session.removeEtag();
 			$location.path('/tests');
 		}, function (error) {
 			if (error.status === 412) {

@@ -90,7 +90,8 @@ def login():
 	user = users.find_one({'email': email,'password': password})
 	if user:
 		hashed = base64.b64encode(email+":"+password)
-		resp = jsonify(hash = hashed, role = user.get('role'), myId = str(user.get('_id')))
+		resp = jsonify(id = str(user.get('_id')), firstname = user.get('firstname'), auth = 'Basic '+hashed, 
+			role = user.get('role'))
 		resp.status_code = 200
 		return resp
 	else:

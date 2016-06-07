@@ -9,24 +9,6 @@
  */
  var app = angular.module('restClientApp');
 
- app.controller('MainCtrl', function ($scope, ClassesService/*, $timeout*/) {
+ app.controller('MainCtrl', function () {
 
- 	var clearVariables = function () {
- 		$scope.classes = [];
- 		$scope.chosenClass = {};
- 	};
-
- 	$scope.initController = function () {
- 		clearVariables();
- 		queryClasses();
- 	};
-
-
- 	var queryClasses = function () {
- 		ClassesService.get(function (data) {
- 			$scope.classes = data._items;
- 		});
- 	};
-
- 	$scope.initController();
  });

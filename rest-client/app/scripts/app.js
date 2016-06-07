@@ -20,83 +20,146 @@ angular
     'base64',
     'LocalStorageModule'
   ])
-  .config(function ($routeProvider, localStorageServiceProvider) {
+  .constant('AUTH_EVENTS', {
+    loginSuccess: 'auth-login-success',
+    loginFailed: 'auth-login-failed',
+    logoutSuccess: 'auth-logout-success',
+    sessionTimeout: 'auth-session-timeout',
+    notAuthenticated: 'auth-not-authenticated',
+    notAuthorized: 'auth-not-authorized'
+  })
+  .constant('USER_ROLES', {
+    all: '*',
+    admin: 'admin',
+    teacher: 'teacher',
+    student: 'student',
+    parent: 'parent',
+    guest: 'guest'
+  })
+  .config(function ($routeProvider, localStorageServiceProvider, USER_ROLES) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/about', {
         templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
+        controller: 'AboutCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/login', {
         templateUrl: 'views/login.html',
-        controller: 'LoginCtrl'
+        controller: 'LoginCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       
       .when('/teacher', {
         templateUrl: 'views/teacher.html',
-        controller: 'TeacherCtrl'
+        controller: 'TeacherCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
 
       .when('/tests', {
         templateUrl: 'views/tests.html',
-        controller: 'TestsCtrl'
+        controller: 'TestsCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.admin, USER_ROLES.teacher]
+        }
       })
       .when('/tests/new', {
         templateUrl: 'views/test-add.html',
-        controller: 'TestAddCtrl'
+        controller: 'TestAddCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/tests/:id/edit', {
         templateUrl: 'views/test-edit.html',
-        controller: 'TestEditCtrl'
+        controller: 'TestEditCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/tests/:id/grades', {
         templateUrl: 'views/test-grades.html',
-        controller: 'TestGradesCtrl'
+        controller: 'TestGradesCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/tests/:id/grades/add', {
         templateUrl: 'views/test-grades-add.html',
-        controller: 'TestGradesAddCtrl'
+        controller: 'TestGradesAddCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
-      /*.when('/tests/:id/grades/edit', {
-        templateUrl: 'views/test-grades-edit.html',
-        controller: 'TestGradesEditCtrl'
-      })*/
 
       .when('/lessons', {
         templateUrl: 'views/lessons.html',
-        controller: 'LessonsCtrl'
+        controller: 'LessonsCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/lessons/new', {
         templateUrl: 'views/lesson-add.html',
-        controller: 'LessonAddCtrl'
+        controller: 'LessonAddCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/lessons/:lessonId', {
         templateUrl: 'views/lesson.html',
-        controller: 'LessonCtrl'
+        controller: 'LessonCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
 
       .when('/students', {
         templateUrl: 'views/students.html',
-        controller: 'StudentsCtrl'
+        controller: 'StudentsCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/students/:id', {
         templateUrl: 'views/student.html',
-        controller: 'StudentCtrl'
+        controller: 'StudentCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/students/:id/grades/new', {
         templateUrl: 'views/grade-add.html',
-        controller: 'GradeAddCtrl'
+        controller: 'GradeAddCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/students/:id/grades/new/:optionalTestId', {
         templateUrl: 'views/grade-add.html',
-        controller: 'GradeAddCtrl'
+        controller: 'GradeAddCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       .when('/students/:id/grades/:gradeId', {
         templateUrl: 'views/grade.html',
-        controller: 'GradeCtrl'
+        controller: 'GradeCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.all]
+        }
       })
       
 
@@ -109,4 +172,19 @@ angular
       .setStorageType('localStorage')
       .setNotify(true, true);
 
+  })
+  .run(function ($rootScope, AUTH_EVENTS, AuthService) {
+    $rootScope.$on('$routeChangeStart', function (event, next) {
+      var authorizedRoles = next.data.authorizedRoles;
+      if (authorizedRoles.indexOf('*') === -1 && !AuthService.isAuthorized(authorizedRoles)) {
+        event.preventDefault();
+        if (AuthService.isAuthenticated()) {
+          // user is not allowed
+          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+        } else {
+          // user is not logged in
+          $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+        }
+      }
+    });
   });

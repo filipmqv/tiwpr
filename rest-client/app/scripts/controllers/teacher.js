@@ -9,7 +9,7 @@
  */
  var app = angular.module('restClientApp');
 
- app.controller('TeacherCtrl', function ($scope, TeacherService, localStorageService) {
+ app.controller('TeacherCtrl', function ($scope, TeacherService) {
 
  	var clearVariables = function () {
  		$scope.teacher = {};
@@ -22,7 +22,7 @@
 
 
  	var getTeacherInfo = function () {
- 		TeacherService.get({teacherId:localStorageService.get('myId')}, function (data) {
+ 		TeacherService.get({teacherId:$scope.currentUser.id}, function (data) {
  			$scope.teacher = data;
  		});
  	};

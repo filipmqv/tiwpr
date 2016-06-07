@@ -11,7 +11,7 @@
 var app = angular.module('restClientApp');
 
 app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsService, ClassesService, 
-    SubjectsService, GradesService, UserService, localStorageService, popupService, clearFieldsService) {
+    SubjectsService, GradesService, UserService, popupService, clearFieldsService, Session) {
 
     var clearVariables = function () {
         $scope.gradevalue = '';
@@ -67,7 +67,7 @@ app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsS
     };
 
     $scope.switchToEditMode = function () {
-        localStorageService.set('etag', $scope.grade._etag);
+        Session.putEtag($scope.grade._etag);
         $scope.gradeOption = $scope.grade.gradevalue;
         $scope.editMode = true;
     };
@@ -82,7 +82,7 @@ app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsS
         $scope.grade = clearFieldsService.clear($scope.grade);
 
         GradesService.update({studentId:$routeParams.id, embed:0}, $scope.grade, function(data) {
-            localStorageService.remove('etag');
+            Session.removeEtag();
             $scope.grade._etag = data._etag;
             $scope.error = '';
             $scope.switchToNormalMode();
@@ -100,8 +100,9 @@ app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsS
 
     $scope.deleteGrade = function(grade) {
         if (popupService.showPopup('Really delete this?')) {
-            localStorageService.set('etag', grade._etag);
+            Session.putEtag(grade._etag);
             GradesService.delete({studentId:$routeParams.id, embed:0}, grade, function() {
+                Session.removeEtag();
                 $location.path('/students/'+$routeParams.id);
             });
         }
@@ -114,7 +115,7 @@ app.controller('GradeCtrl', function ($scope, $location, $routeParams, StudentsS
 
 
 app.controller('GradeAddCtrl', function ($scope, $location, $routeParams, StudentsService, ClassesService, 
-    SubjectsService, TestsService, GradesService, UserService, localStorageService, clearFieldsService) {
+    SubjectsService, TestsService, GradesService, UserService, clearFieldsService, Session) {
 
     var clearVariables = function () {
         $scope.error = '';
@@ -160,13 +161,13 @@ app.controller('GradeAddCtrl', function ($scope, $location, $routeParams, Studen
     };
 
     var getTests = function () {
-        TestsService.get({teacherId:localStorageService.get('myId')}, function (data) {
+        TestsService.get({teacherId:$scope.currentUser.id}, function (data) {
             $scope.tests = data._items;
         });
     };
 
     var getTest = function () {
-        TestsService.get({testId:$routeParams.optionalTestId, teacherId:localStorageService.get('myId'), 
+        TestsService.get({testId:$routeParams.optionalTestId, teacherId:$scope.currentUser.id, 
             embObj:'"subject_id":1'}, function (data) {
                 $scope.specificTest = true;
                 $scope.subject = data.subject_id.name;
@@ -186,7 +187,6 @@ app.controller('GradeAddCtrl', function ($scope, $location, $routeParams, Studen
                 return $scope.tests[i];
             }
         }
-        //$scope.grade.test_id === 
     }
 
     var addGradeMethod = function() {
@@ -209,10 +209,10 @@ app.controller('GradeAddCtrl', function ($scope, $location, $routeParams, Studen
         var thisTest = getThisTest();
         if (thisTest.status === 0) {
             thisTest.status = 1;
-            localStorageService.set('etag', thisTest._etag);
+            Session.putEtag(thisTest._etag);
             thisTest = clearFieldsService.clear(thisTest);
-            TestsService.update({teacherId:localStorageService.get('myId')}, thisTest, function() {
-                localStorageService.remove('etag');
+            TestsService.update({teacherId:$scope.currentUser.id}, thisTest, function() {
+                Session.removeEtag();
                 addGradeMethod();
             }, function (error) {
                 $scope.error = 'Error while updating test '+error.status +' '+ error.statusText;

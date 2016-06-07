@@ -11,7 +11,7 @@
 var app = angular.module('restClientApp');
 
 app.controller('TestGradesCtrl', function ($scope, $routeParams, TestsService, StudentsService, 
-		GradesCombinedService /*localStorageService, popupService*/) {
+		GradesCombinedService) {
 
 	var clearVariables = function () {
 		$scope.test = {};
@@ -67,7 +67,7 @@ app.controller('TestGradesCtrl', function ($scope, $routeParams, TestsService, S
 
 
 app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $filter, TestsService, 
-	StudentsService, GradesCombinedService, clearFieldsService, localStorageService) {
+	StudentsService, GradesCombinedService, clearFieldsService, Session) {
 
 	var clearVariables = function () {
 		$scope.buttonText = 'Add';
@@ -127,11 +127,11 @@ app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $f
 		// due to embedded fields:
 		testObj.class_id = testObj.class_id._id;
 		testObj.subject_id = testObj.subject_id._id;
-		localStorageService.set('etag', testObj._etag);
+		Session.putEtag(testObj._etag);
 		testObj = clearFieldsService.clear(testObj);
 
-		TestsService.update({teacherId:localStorageService.get('myId')}, testObj, function() {
-			localStorageService.remove('etag');
+		TestsService.update({teacherId:$scope.currentUser.id}, testObj, function() {
+			Session.removeEtag();
 			$scope.test.status = 1;
 
 			// post grades
@@ -159,7 +159,7 @@ app.controller('TestGradesAddCtrl', function($scope, $routeParams, $location, $f
 TODO ###################
 
 app.controller('TestGradesEditCtrl', function($scope, $routeParams, $location, $filter, TestsService, 
-	ClassesService, SubjectsService, localStorageService) {
+	ClassesService, SubjectsService) {
 
 	
 });*/

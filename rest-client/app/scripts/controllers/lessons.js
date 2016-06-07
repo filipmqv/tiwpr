@@ -10,7 +10,7 @@
 */
 var app = angular.module('restClientApp');
 
-app.controller('LessonsCtrl', function($scope, LessonsService, localStorageService, paginationService) {
+app.controller('LessonsCtrl', function($scope, LessonsService, paginationService) {
 
 	var clearVariables = function() {
 		$scope.lessons = [];
@@ -25,7 +25,7 @@ app.controller('LessonsCtrl', function($scope, LessonsService, localStorageServi
 
 	$scope.getLessons = function (n) {
 		LessonsService.get({embObj:'"class_id":1, "subject_id":1, "teacher_id":1', n:n, 
-			whereObj:'"teacher_id":"'+localStorageService.get('myId')+'"'}, function (data) {
+			whereObj:'"teacher_id":"'+$scope.currentUser.id+'"'}, function (data) {
 				$scope.lessons = data._items;
 				$scope.meta = data._meta;
 			});
@@ -43,7 +43,7 @@ app.controller('LessonsCtrl', function($scope, LessonsService, localStorageServi
 
 
 app.controller('LessonAddCtrl', function($scope, $routeParams, $location, $filter, LessonsService, ClassesService, 
-	SubjectsService, StudentsService, AttendancesService, AttendancesCombinedService, localStorageService) {
+	SubjectsService, StudentsService, AttendancesService, AttendancesCombinedService) {
 
 	var clearVariables = function () {
 		$scope.error = '';
@@ -102,10 +102,10 @@ app.controller('LessonAddCtrl', function($scope, $routeParams, $location, $filte
 	};
 
 	$scope.addLesson = function() { 
-		$scope.lesson.teacher_id = localStorageService.get('myId');
+		$scope.lesson.teacher_id = $scope.currentUser.id;
 		$scope.lesson.lessondate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
 		
-		$scope.lesson.$save({teacherId:localStorageService.get('myId')}, function(data) {
+		$scope.lesson.$save({teacherId:$scope.currentUser.id}, function(data) {
 			prepareAttendancesObj(data._id);
 			AttendancesCombinedService.saveBulk($scope.attendancesObj, function() {
 				$location.path('/lessons');
