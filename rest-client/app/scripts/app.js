@@ -60,9 +60,9 @@ angular
         }
       })
       
-      .when('/teacher', {
-        templateUrl: 'views/teacher.html',
-        controller: 'TeacherCtrl',
+      .when('/user', {
+        templateUrl: 'views/user.html',
+        controller: 'UserCtrl',
         data: {
           authorizedRoles: [USER_ROLES.all]
         }

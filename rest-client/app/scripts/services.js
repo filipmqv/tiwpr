@@ -122,9 +122,9 @@ services.factory('SubjectsService', function ($resource) {
   return $resource(domainUrl + 'subjects');
 });
 
-services.factory('TeacherService', function ($resource) {
+/*services.factory('TeacherService', function ($resource) {
   return $resource(domainUrl + 'users/:teacherId');
-});
+});*/
 
 services.factory('TestsService', function ($resource, Session) {
   return $resource(domainUrl + 'tests/:testId?embedded={:embObj}&where={"teacher_id": ":teacherId"}' , 

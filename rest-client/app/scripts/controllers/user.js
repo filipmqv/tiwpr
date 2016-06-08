@@ -9,21 +9,21 @@
  */
  var app = angular.module('restClientApp');
 
- app.controller('TeacherCtrl', function ($scope, TeacherService) {
+ app.controller('UserCtrl', function ($scope, UserService) {
 
  	var clearVariables = function () {
- 		$scope.teacher = {};
+ 		$scope.userJson = {};
  	};
 
  	$scope.initController = function () {
  		clearVariables();
- 		getTeacherInfo();
+ 		getUserInfo();
  	};
 
 
- 	var getTeacherInfo = function () {
- 		TeacherService.get({teacherId:$scope.currentUser.id}, function (data) {
- 			$scope.teacher = data;
+ 	var getUserInfo = function () {
+ 		UserService.get({userId:$scope.currentUser.id}, function (data) {
+ 			$scope.userJson = data;
  		});
  	};
 
