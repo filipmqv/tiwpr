@@ -1,4 +1,6 @@
-############################
+REST-PROJECT:
+
+____________________________
 
 rest-client:
 
@@ -7,12 +9,23 @@ auth: Basic (not secure)
 almost no validation
 main aim of the project was to expose REST endpoints and use them
 
+____________________________
+
 eve-python-rest:
+
 simple REST server working with MongoDB
 
+____________________________
 
-mongodb:	sudo service mongod stop; mongod --dbpath={{path_to}}eve-python-rest/data/db/
-gui:		robomongo
+mongodb:	sudo service mongod stop; mongod --dbpath={{path_to}}/rest-eve-python/data/db/
+gui:		robomongo 		// from proper dir
 server:		python api.py
-angular:	grunt serve
-db maneger:	mongo 
+angular:	grunt serve		// just for development
+db manager:	mongo			// console mongoDB manager 
+
+
+############################
+
+WEBSOCKETS-PROJECT:
+
+

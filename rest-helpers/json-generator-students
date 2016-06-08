@@ -1,0 +1,12 @@
+[
+  '{{repeat(5, 7)}}',
+  {
+    firstname:'{{firstName()}}',
+    lastname:'{{surname()}}',
+    email:'{{email()}}',
+    password:'password',
+    role:'student',
+    class_id:'{{random("5744b99e0054804833f17fa0", "5744b9a40054804833f17fa1", "5744b9a60054804833f17fa2", "5744b9aa0054804833f17fa3", "5744b9ac0054804833f17fa4", "5744b9ae0054804833f17fa5", "5744b9b30054804833f17fa6", "5744b9b50054804833f17fa7", "5744b9b70054804833f17fa8")}}',
+    registrynumber:'{{integer(1, 30)}}'
+  }
+]

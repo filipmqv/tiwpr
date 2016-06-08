@@ -1,0 +1,11 @@
+[
+  '{{repeat(100)}}',
+  {   
+lessondate: '{{date(new Date(2014, 0, 1), new Date(), "YYYY-MM-ddThh:mm:ss")}}',
+class_id: '{{random("5744b99e0054804833f17fa0", "5744b9a40054804833f17fa1", "5744b9a60054804833f17fa2")}}',
+teacher_id: '5746fbb40054802f7631effb',
+subject_id: '{{random("5744cab100548059b867a08a", "5744cac300548059b867a08e", "5744cac700548059b867a08f")}}'
+
+    
+  }
+]
