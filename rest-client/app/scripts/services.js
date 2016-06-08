@@ -187,10 +187,23 @@ services.factory('GradesCombinedService', function ($resource) {
   });
 });
 
-services.factory('LessonsService', function ($resource) {
+services.factory('LessonsService', function ($resource, Session) {
   return $resource(domainUrl + 'lessons/:lessonId?embedded={:embObj}&'+
     'where={:whereObj}&page=:n' , {lessonId:'@_id'}, {
+      update: {
+        method: 'PUT',
+        headers: {
+          'If-Match': 
+          function () {
+            return Session.etag;
+          }
+        }
+      }
     });
+});
+
+services.factory('LessonsIdService', function ($resource) {
+  return $resource(domainUrl + 'lessonsid');
 });
 
 services.factory('AttendancesService', function ($resource, Session) {

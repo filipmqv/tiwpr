@@ -20,7 +20,8 @@ users = {
         'field': 'email',
     },
     'datasource': {
-        'projection': {'password': 0}
+        'projection': {'password': 0},
+        'filter': {'firstname': {'$ne': 'dummy'}}
     },
     'schema': {
         'firstname': {
@@ -141,7 +142,8 @@ classes = {
         }
     },
     'datasource': {
-        'default_sort': [('name', 1)]
+        'default_sort': [('name', 1)],
+        'filter': {'name': {'$ne': 'dummy'}}
     },
     'hateoas': False
 }
@@ -155,7 +157,8 @@ subjects = {
         }
     },
     'datasource': {
-        'default_sort': [('name', 1)]
+        'default_sort': [('name', 1)],
+        'filter': {'name': {'$ne': 'dummy'}}
     }
 }
 
@@ -200,7 +203,7 @@ tests = {
                  'embeddable': True
             },
         },
-        'status': { # 0-zapowiedziany, 1-oceniony (ocenionego nie mozna usunac bez anulowania wczesniej ocen)
+        'status': { # 0-zapowiedziany, 1-oceniony (oceny automatycznie usuwane)
             'type': 'integer', 
             'required': True
         }
@@ -268,44 +271,66 @@ absences = {
     'hateoas': False
 }
 
+lessons_schema = {
+    'lessondate': {
+            'type': 'datetime',
+            'required': True
+    },
+    'class_id': {
+        'type': 'objectid',
+        'data_relation': {
+             'resource': 'classes',
+             'field': '_id',
+             'embeddable': True
+        }
+    },
+    'teacher_id': {
+        'type': 'objectid',
+        'data_relation': {
+             'resource': 'users',
+             'field': '_id',
+             'embeddable': True
+        }
+    },
+    'subject_id': {
+        'type': 'objectid',
+        'data_relation': {
+             'resource': 'subjects',
+             'field': '_id',
+             'embeddable': True
+        },
+    }
+}
+
 lessons = {
     'item_title': 'lesson',
     'pagination': True,
-    'schema': {
-        'lessondate': {
-            'type': 'datetime',
-            'required': True
-        },
-        'class_id': {
-            'type': 'objectid',
-            'data_relation': {
-                 'resource': 'classes',
-                 'field': '_id',
-                 'embeddable': True
-            }
-        },
-        'teacher_id': {
-            'type': 'objectid',
-            'data_relation': {
-                 'resource': 'users',
-                 'field': '_id',
-                 'embeddable': True
-            }
-        },
-        'subject_id': {
-            'type': 'objectid',
-            'data_relation': {
-                 'resource': 'subjects',
-                 'field': '_id',
-                 'embeddable': True
-            },
-        }
-    },
+    'schema': lessons_schema,
     'datasource': {
         'default_sort': [('lessondate', -1)]
     }
 }
 
+lessonsid = {
+    'schema': {
+        'lessondate': {
+                'type': 'datetime',
+                'required': False
+        },
+        'class_id': {
+            'type': 'objectid'
+        },
+        'teacher_id': {
+            'type': 'objectid'
+        },
+        'subject_id': {
+            'type': 'objectid'
+        }
+    },
+    'datasource': {"source": "lessons"},
+    'resource_methods': ['POST'],
+    'item_methods': []
+}
 
 DOMAIN = {
     'users': users, 
@@ -319,5 +344,6 @@ DOMAIN = {
     'attendances': attendances,
     'students_attendances': students_attendances,
     'absences': absences,
-    'lessons': lessons
+    'lessons': lessons,
+    'lessonsid': lessonsid
 }

@@ -42,8 +42,8 @@ app.controller('LessonsCtrl', function($scope, LessonsService, paginationService
 
 
 
-app.controller('LessonAddCtrl', function($scope, $routeParams, $location, $filter, LessonsService, ClassesService, 
-	SubjectsService, StudentsService, AttendancesService, AttendancesCombinedService) {
+app.controller('LessonAddCtrl', function($scope, $routeParams, $location, $filter, LessonsService, LessonsIdService, 
+	ClassesService, SubjectsService, StudentsService, AttendancesService, AttendancesCombinedService, Session) {
 
 	var clearVariables = function () {
 		$scope.error = '';
@@ -61,6 +61,7 @@ app.controller('LessonAddCtrl', function($scope, $routeParams, $location, $filte
 		clearVariables();
 		getClasses();
 		getSubjects();
+		getIdForNewLesson();
 	};
 
 	var getClasses = function () {
@@ -101,12 +102,33 @@ app.controller('LessonAddCtrl', function($scope, $routeParams, $location, $filte
 		}
 	};
 
+	var createDummyLesson = function() {
+		var dummyLesson = {};
+		dummyLesson.lessondate = '1000-01-01T00:00:00'; // dummy date
+		dummyLesson.class_id = '5757490100548006550e46d5'; // dummy class
+		dummyLesson.teacher_id = '5757495100548006550e46d6'; //dummy teacher
+		dummyLesson.subject_id = '57574d1200548006550e46d7'; // dummy subject
+		return dummyLesson;
+	};
+
+	var getIdForNewLesson = function() {
+		LessonsIdService.save({}, createDummyLesson(), function(data) {
+			// obtained id and etag
+			$scope.lesson._id = data._id;
+			Session.putEtag(data._etag);
+		}, function(error) {
+			$scope.error = 'Error while obtaining id for new lesson '+error.status +' '+ error.statusText;
+			console.log(error);
+		});
+	}
+
 	$scope.addLesson = function() { 
 		$scope.lesson.teacher_id = $scope.currentUser.id;
 		$scope.lesson.lessondate = $filter('date')($scope.picker, 'yyyy-MM-ddTHH:mm:ss');
-		
-		$scope.lesson.$save({teacherId:$scope.currentUser.id}, function(data) {
-			prepareAttendancesObj(data._id);
+
+		LessonsService.update({}, $scope.lesson, function() {
+			Session.removeEtag();
+			prepareAttendancesObj($scope.lesson._id);
 			AttendancesCombinedService.saveBulk($scope.attendancesObj, function() {
 				$location.path('/lessons');
 			}, function (error) {
