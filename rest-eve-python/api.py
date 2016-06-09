@@ -108,3 +108,4 @@ def delete_grades(item):
 if __name__ == '__main__':
 	app.on_delete_item_tests += delete_grades
 	app.run(threaded=True)
+	#app.run(threaded=True,host="0.0.0.0",port=int("5000"))

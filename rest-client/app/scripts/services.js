@@ -3,6 +3,7 @@
 var services = angular.module('SchoolServices', ['ngResource']);
 
 var lhost = 'http://localhost:5000/';
+//var lhost = 'http://192.168.1.4:5000/';
 //var rhcloud = 'http://server-foodplaner.rhcloud.com/rest/v1/'; // to change
 var domainUrl = lhost;
 
