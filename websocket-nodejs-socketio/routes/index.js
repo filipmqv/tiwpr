@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
-router.get('/:roomId', function(req, res, next) {
+router.get('/:roomId/:userName', function(req, res, next) {
   res.render('game', { title: req.params.roomId });
 });
 

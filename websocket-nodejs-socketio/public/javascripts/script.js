@@ -54,6 +54,7 @@ var socket = io.connect('192.168.1.4:3000');
 socket.on('connection reply', function (data) {
 	socket.emit('room and dimensions', {
 		roomName: window.location.pathname.split('/')[1],
+		userName: window.location.pathname.split('/')[2],
 		cHeight: window.innerHeight,
 		cWidth: window.innerWidth
 	});
@@ -63,7 +64,7 @@ socket.on('players', function (data) {
 	console.log(data);
 	var textToSet = '';
 	for (var i in data) {
-		textToSet += data[i].userId + ' : ' + data[i].points + '\n';
+		textToSet += data[i].userName + ' : ' + data[i].points + '\n';
 	}
 	text.setText(textToSet);
 	canvas.renderAll();

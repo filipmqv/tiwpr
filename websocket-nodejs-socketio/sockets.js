@@ -35,11 +35,13 @@ module.exports = function(server){
                 rooms[userRoomName].objects = {};
             }
             sockets[userId].roomName = data.roomName;
+            sockets[userId].userName = data.userName;
             sockets[userId].cHeight = data.cHeight;
             sockets[userId].cWidth = data.cWidth;
-            sockets[userId].points = 0;
+            if (!sockets[userId].points) sockets[userId].points = 0;
             rooms[userRoomName].users[userId] = 'dummy';
             emitPlayers(userRoomName);
+            emitAllObjects(userRoomName, userId);
         });
 
         socket.on('game object click', function (data) {
@@ -65,7 +67,7 @@ module.exports = function(server){
         function getPlayersFromRoom(rName) {
             var players = [];
             for(var uId in rooms[rName].users) {
-                players.push({userId: uId, points: sockets[uId].points});
+                players.push({userName: sockets[uId].userName, points: sockets[uId].points});
             }
             return players;
         }
@@ -74,11 +76,19 @@ module.exports = function(server){
             emitInRoom(rName, 'players', getPlayersFromRoom(rName));
         }
 
+        function emitAllObjects(rName, uId) {
+            for(var oId in rooms[rName].objects) {
+                sockets[uId].socket.emit('new object', rooms[rName].objects[oId]);
+            }
+        }
+
         function emitInRoom(rName, tag, emitObject) {
             for(var uId in rooms[rName].users) {
                 sockets[uId].socket.emit(tag, emitObject);
             }
         }
+
+
 
         
     });
@@ -117,21 +127,24 @@ module.exports = function(server){
     var objectId = 0;
     function generateObjects() {
         for (var rName in rooms) {
-            //var uId = rooms[i]. TODO maxWidth maxHeight
-            var generated = {};
-            generated.type = 'rect';
-            generated.props = generateObject(objectId++, 600, 300);
-            rooms[rName].objects[generated.props.id] = generated;
-            for(var uId in rooms[rName].users) {
-                sockets[uId].socket.emit('new object', generated);
+            if (Object.keys(rooms[rName].objects).length < 100) {
+                var generated = {};
+                generated.type = 'rect';
+                generated.props = generateObject(objectId++, 600, 300);
+                rooms[rName].objects[generated.props.id] = generated;
+                for(var uId in rooms[rName].users) {
+                    sockets[uId].socket.emit('new object', generated);
+                }
             }
+            //var uId = rooms[i]. TODO maxWidth maxHeight
+            
 
 
         }
     }
 
     (function generateObjectsLoop() {
-        var rand = getRandomInt(30, 3000)
+        var rand = getRandomInt(20, 3000)
         setTimeout(function() {
             generateObjects();
             generateObjectsLoop();  
