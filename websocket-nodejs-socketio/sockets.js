@@ -17,10 +17,12 @@ module.exports = function(server){
         }
         var userId = cookieString.substr(index, index+18);
         var userRoomName = '';
+        var userName = '';
 
         console.log('connected ' + userId + '   ' + cookieString);
 
-        if (!sockets[userId]) { // if user is first time
+        if (!sockets[userId]) { 
+            // if user is first time
             sockets[userId] = {};
         }
         sockets[userId].socket = socket;
@@ -29,7 +31,9 @@ module.exports = function(server){
 
         socket.on('room and dimensions', function (data) {
             userRoomName = data.roomName;
-            if (!rooms[userRoomName]) { // if such room doesn't exist
+            userName = data.userName;
+            if (!rooms[userRoomName]) { 
+                // if such room doesn't exist
                 rooms[userRoomName] = {};
                 rooms[userRoomName].users = {};
                 rooms[userRoomName].objects = {};
@@ -38,19 +42,36 @@ module.exports = function(server){
             sockets[userId].userName = data.userName;
             sockets[userId].cHeight = data.cHeight;
             sockets[userId].cWidth = data.cWidth;
-            if (!sockets[userId].points) sockets[userId].points = 0;
+            if (!sockets[userId].points) {
+                sockets[userId].points = 0;
+            }
             rooms[userRoomName].users[userId] = 'dummy';
             emitPlayers(userRoomName);
-            emitAllObjects(userRoomName, userId);
+            emitAllObjects(userRoomName);
         });
 
         socket.on('game object click', function (data) {
-            if (rooms[userRoomName].objects[data.id]) { // if not clicked yet
+            if (rooms[userRoomName].objects[data.id]) { 
+                // if not clicked yet
                 emitInRoom(userRoomName, 'remove object', {id: data.id});
                 var tempObj = rooms[userRoomName].objects[data.id].props;
-                sockets[userId].points += Math.ceil(1000 / (tempObj.width * tempObj.height));
+                var newPoints = Math.ceil(1000 / (tempObj.width * tempObj.height))
+                sockets[userId].points += newPoints;
+                socket.emit('new points', {amount: newPoints});
                 emitPlayers(userRoomName);
                 delete rooms[userRoomName].objects[data.id];
+            }
+        });
+
+        socket.on('any click', function (data) {
+            emitInRoom(userRoomName, 'user clicked', {X: data.X, Y: data.Y});
+        });
+
+        socket.on('resize', function (data) {
+            if (sockets[userId]) {
+                sockets[userId].cHeight = data.cHeight;
+                sockets[userId].cWidth = data.cWidth;
+                console.log(userName + ' resized to w=' + data.cHeight + ' h=' + data.cWidth);
             }
         });
 
@@ -69,6 +90,7 @@ module.exports = function(server){
             for(var uId in rooms[rName].users) {
                 players.push({userName: sockets[uId].userName, points: sockets[uId].points});
             }
+            players.sort(function(a,b) {return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);} );
             return players;
         }
 
@@ -76,9 +98,9 @@ module.exports = function(server){
             emitInRoom(rName, 'players', getPlayersFromRoom(rName));
         }
 
-        function emitAllObjects(rName, uId) {
+        function emitAllObjects(rName) {
             for(var oId in rooms[rName].objects) {
-                sockets[uId].socket.emit('new object', rooms[rName].objects[oId]);
+                socket.emit('new object', rooms[rName].objects[oId]);
             }
         }
 
@@ -107,44 +129,54 @@ module.exports = function(server){
     }
 
     function getRandomColor() {
-        return 'rgb('+getRandomInt(0,255)+','+getRandomInt(0,255)+','+getRandomInt(0,255)+')';
+        return 'rgb('+getRandomInt(0,240)+','+getRandomInt(0,240)+','+getRandomInt(0,240)+')';
     }
 
     function generateObject(id, maxW, maxH) {
+        var oWidth = getRandomInt(5, 50);
+        var oHeight = getRandomInt(5, 50);
         var object = {
             id: id,
             gameObject: true,
-            left: getRandomInt(0, maxW),
-            top: getRandomInt(0, maxH),
+            left: getRandomInt(0, maxW-oWidth),
+            top: getRandomInt(0, maxH-oHeight),
             fill: getRandomColor(),
-            width: getRandomInt(5, 50),
-            height: getRandomInt(5, 50),
+            width: oWidth,
+            height: oHeight,
             selectable: false
         };
         return object;
     }
 
+    function getMaxDimensions(rName) {
+        var result = {};
+        result.width = 99999999;
+        result.height = 99999999;
+        for (var uId in rooms[rName].users) {
+            result.width = result.width > sockets[uId].cWidth ? sockets[uId].cWidth : result.width;
+            result.height = result.height > sockets[uId].cHeight ? sockets[uId].cHeight : result.height;
+        }
+        return result;
+    }
+
     var objectId = 0;
     function generateObjects() {
         for (var rName in rooms) {
-            if (Object.keys(rooms[rName].objects).length < 100) {
+            if (Object.keys(rooms[rName].objects).length < 75) {
+                var maxDimens = getMaxDimensions(rName);
                 var generated = {};
                 generated.type = 'rect';
-                generated.props = generateObject(objectId++, 600, 300);
+                generated.props = generateObject(objectId++, maxDimens.width, maxDimens.height);
                 rooms[rName].objects[generated.props.id] = generated;
                 for(var uId in rooms[rName].users) {
                     sockets[uId].socket.emit('new object', generated);
                 }
             }
-            //var uId = rooms[i]. TODO maxWidth maxHeight
-            
-
-
         }
     }
 
     (function generateObjectsLoop() {
-        var rand = getRandomInt(20, 3000)
+        var rand = getRandomInt(80, 1000);
         setTimeout(function() {
             generateObjects();
             generateObjectsLoop();  

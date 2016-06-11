@@ -6,41 +6,31 @@ resize();
 function resize() {
 	canvas.setHeight(window.innerHeight);
 	canvas.setWidth(window.innerWidth);
+	if (socket) {
+		socket.emit('resize', {
+			cHeight: window.innerHeight, 
+			cWidth: window.innerWidth
+		});
+	}
 };
+
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 var canvasObjects = {};
 
 var text = new fabric.Text('', { 
 	left: 50, 
 	top: 50, 
-	fontSize: 10,
+	fontSize: 60,
 	selectable: false,
+	evented: false,
+	opacity: 0.3,
+	textAlign: 'right',
 	hoverCursor: 'default'
 });
 canvas.add(text);
-
-// create a rectangle object
-/*var rect = new fabric.Rect({
-	left: 0,
-	top: 0,
-	fill: 'green',
-	width: 20,
-	height: 20
-});
-
-var other = new fabric.Rect({
-	left: 30,
-	top: 30,
-	fill: 'green',
-	width: 20,
-	height: 20,
-	selectable: false
-});/
-
-/*canvas.add(rect);
-canvas.add(other);
-canvas.renderAll();*/
-
 
 
 
@@ -61,7 +51,6 @@ socket.on('connection reply', function (data) {
 });
 
 socket.on('players', function (data) {
-	console.log(data);
 	var textToSet = '';
 	for (var i in data) {
 		textToSet += data[i].userName + ' : ' + data[i].points + '\n';
@@ -73,17 +62,16 @@ socket.on('players', function (data) {
 socket.on('new object', function (data) {
 	canvasObjects[data.props.id] = new fabric.Rect(data.props);
 	canvas.add(canvasObjects[data.props.id]);
+	text.bringToFront();
 	canvas.renderAll();
 });
 
 canvas.on('mouse:down', function(options) {
-	console.log(options.e.clientX + ' ' + options.e.clientY)
 	socket.emit('any click', {
 		X: options.e.clientX, 
 		Y: options.e.clientY
 	});
 	if (options.target && options.target.gameObject) {
-		console.log('an object was clicked! ', options.target);
 		socket.emit('game object click', {
 			id: options.target.id
 		});
@@ -95,6 +83,49 @@ socket.on('remove object', function (data) {
 	delete canvasObjects[data.id]
 	canvas.renderAll();
 });
+
+socket.on('new points', function (data) {
+	var pointsRect = new fabric.Text('+'+data.amount, {  
+		//left: getRandomInt(data.X - 50, (data.X + 50) < (window.innerWidth - 150) ? (data.X + 50) : (window.innerWidth - 150)), 
+		//top: getRandomInt(data.Y - 50, (data.Y + 50) < (window.innerHeight - 150) ? (data.Y + 50) : (window.innerHeight - 150)), 
+		left: getRandomInt(50, window.innerWidth - 150),
+		top: getRandomInt(50, window.innerHeight - 150),
+		fontSize: 50,
+		selectable: false,
+		evented: false,
+		hoverCursor: 'default'
+	});
+	pointsRect.animate('fontSize', '+=100', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 500,
+		easing: fabric.util.ease.easeInOutQuad,
+		onComplete: function() {canvas.remove(pointsRect)}
+	});
+	pointsRect.animate('opacity', 0, {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 500,
+		easing: fabric.util.ease.easeInOutQuad
+	});
+	canvas.add(pointsRect);
+});
+
+socket.on('user clicked', function (data) {
+	var clickCircle = new fabric.Circle({ 
+		left: data.X-5,
+		top: data.Y-5,
+		radius: 5,
+		selectable: false,
+		evented: false,
+		hoverCursor: 'default'
+	});
+	clickCircle.animate('opacity', 0, {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 400,
+		easing: fabric.util.ease.easeOutQuad
+	});
+	canvas.add(clickCircle);
+});
+
 /*socket.on('begin', function (data) {
 	rect.set(data);
 	canvas.renderAll();
