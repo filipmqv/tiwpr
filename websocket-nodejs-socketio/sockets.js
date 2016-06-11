@@ -4,6 +4,7 @@ module.exports = function(server){
     var rooms = {};
 
     socketio.sockets.on('connection', function(socket) {
+        // if there's no cookie and no userId in cookie - disconnect
         var cookieString = socket.request.headers.cookie;
         if (!cookieString) {
             socket.disconnect();
@@ -15,10 +16,11 @@ module.exports = function(server){
             return;
         }
         var userId = cookieString.substr(index, index+18);
-        console.log('connected ' + userId + '   ' + cookieString);
         var userRoomName = '';
 
-        if (!sockets[userId]) {
+        console.log('connected ' + userId + '   ' + cookieString);
+
+        if (!sockets[userId]) { // if user is first time
             sockets[userId] = {};
         }
         sockets[userId].socket = socket;
@@ -26,40 +28,34 @@ module.exports = function(server){
         socket.emit('connection reply');
 
         socket.on('room and dimensions', function (data) {
-            var requestedRoom = data.roomName;
-            if (!rooms[requestedRoom]) {
-                rooms[requestedRoom] = {};
-                rooms[requestedRoom].users = [];
-                rooms[requestedRoom].objects = {};
+            userRoomName = data.roomName;
+            if (!rooms[userRoomName]) { // if such room doesn't exist
+                rooms[userRoomName] = {};
+                rooms[userRoomName].users = {};
+                rooms[userRoomName].objects = {};
             }
             sockets[userId].roomName = data.roomName;
             sockets[userId].cHeight = data.cHeight;
             sockets[userId].cWidth = data.cWidth;
             sockets[userId].points = 0;
-            userRoomName = data.roomName;
-            rooms[requestedRoom].users.push(userId);
-            emitPlayers(requestedRoom);
+            rooms[userRoomName].users[userId] = 'dummy';
+            emitPlayers(userRoomName);
         });
 
         socket.on('game object click', function (data) {
-            //rooms[userRoomName].objects.splice(getIndexOfObjectInRoom(data.id), 1);
-            delete rooms[userRoomName].objects[data.id];
-            // TODO jesli istnieje tylko usun, a pierwszemu kto kliknal daj pkt
-            emitInRoom(userRoomName, 'remove object', {id: data.id});
+            if (rooms[userRoomName].objects[data.id]) { // if not clicked yet
+                emitInRoom(userRoomName, 'remove object', {id: data.id});
+                var tempObj = rooms[userRoomName].objects[data.id].props;
+                sockets[userId].points += Math.ceil(1000 / (tempObj.width * tempObj.height));
+                emitPlayers(userRoomName);
+                delete rooms[userRoomName].objects[data.id];
+            }
         });
-
 
         socket.on('disconnect', function () {
             // TODO oznacz jako zakonczony, usun dopiero po uplywie jakiegos czasu gdyby user chcial wrocic
-
-            rooms[userRoomName].users.splice(getIndexOfUserInRoom(userId), 1);
-
-
-            /*delete sockets[userId];
-
-            for(var username in sockets){
-                sockets[username].socket.emit("someoneLeft", userId);
-            }*/
+            delete rooms[userRoomName].users[userId];
+            emitPlayers(userRoomName);
         });
 
         socket.on('error', function(error){
@@ -68,33 +64,21 @@ module.exports = function(server){
 
         function getPlayersFromRoom(rName) {
             var players = [];
-            for(var i in rooms[rName].users) {
-                var uId = rooms[rName].users[i];
-                //console.log(rooms[rName].users[i])
+            for(var uId in rooms[rName].users) {
                 players.push({userId: uId, points: sockets[uId].points});
             }
             return players;
         }
 
         function emitPlayers(rName) {
-            var emitObject = getPlayersFromRoom(rName);
-            emitInRoom(rName, 'players', emitObject);
+            emitInRoom(rName, 'players', getPlayersFromRoom(rName));
         }
 
         function emitInRoom(rName, tag, emitObject) {
-            for(var i in rooms[rName].users) {
-                var uId = rooms[rName].users[i];
+            for(var uId in rooms[rName].users) {
                 sockets[uId].socket.emit(tag, emitObject);
             }
         }
-
-        function getIndexOfUserInRoom(uId) {
-            return rooms[userRoomName].users.indexOf(uId);
-        }
-
-        /*function getIndexOfObjectInRoom(objectId) {
-            return rooms[userRoomName].objects.indexOf(objectId);
-        }*/
 
         
     });
@@ -132,15 +116,13 @@ module.exports = function(server){
 
     var objectId = 0;
     function generateObjects() {
-        for (var i in rooms) {
+        for (var rName in rooms) {
             //var uId = rooms[i]. TODO maxWidth maxHeight
             var generated = {};
             generated.type = 'rect';
             generated.props = generateObject(objectId++, 600, 300);
-
-            //rooms[i].objects.push(generated);
-            for(var j in rooms[i].users) {
-                var uId = rooms[i].users[j];
+            rooms[rName].objects[generated.props.id] = generated;
+            for(var uId in rooms[rName].users) {
                 sockets[uId].socket.emit('new object', generated);
             }
 
@@ -149,7 +131,7 @@ module.exports = function(server){
     }
 
     (function generateObjectsLoop() {
-        var rand = getRandomInt(100, 5000)
+        var rand = getRandomInt(30, 3000)
         setTimeout(function() {
             generateObjects();
             generateObjectsLoop();  
