@@ -43,7 +43,10 @@ module.exports = function(server){
             sockets[userId].cHeight = data.cHeight;
             sockets[userId].cWidth = data.cWidth;
             if (!sockets[userId].points) {
-                sockets[userId].points = 0;
+                sockets[userId].points = {};
+            }
+            if (!sockets[userId].points[userRoomName]) {
+                sockets[userId].points[userRoomName] = 0;
             }
             rooms[userRoomName].users[userId] = 'dummy';
             emitPlayers(userRoomName);
@@ -56,8 +59,8 @@ module.exports = function(server){
                 emitInRoom(userRoomName, 'remove object', {id: data.id});
                 var tempObj = rooms[userRoomName].objects[data.id].props;
                 var newPoints = Math.ceil(1000 / (tempObj.width * tempObj.height))
-                sockets[userId].points += newPoints;
-                socket.emit('new points', {amount: newPoints});
+                sockets[userId].points[userRoomName] += newPoints;
+                socket.emit('new points', {amount: newPoints, X: data.X, Y: data.Y});
                 emitPlayers(userRoomName);
                 delete rooms[userRoomName].objects[data.id];
             }
@@ -76,7 +79,6 @@ module.exports = function(server){
         });
 
         socket.on('disconnect', function () {
-            // TODO oznacz jako zakonczony, usun dopiero po uplywie jakiegos czasu gdyby user chcial wrocic
             delete rooms[userRoomName].users[userId];
             emitPlayers(userRoomName);
         });
@@ -88,7 +90,7 @@ module.exports = function(server){
         function getPlayersFromRoom(rName) {
             var players = [];
             for(var uId in rooms[rName].users) {
-                players.push({userName: sockets[uId].userName, points: sockets[uId].points});
+                players.push({userName: sockets[uId].userName, points: sockets[uId].points[userRoomName]});
             }
             players.sort(function(a,b) {return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);} );
             return players;

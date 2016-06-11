@@ -73,7 +73,9 @@ canvas.on('mouse:down', function(options) {
 	});
 	if (options.target && options.target.gameObject) {
 		socket.emit('game object click', {
-			id: options.target.id
+			id: options.target.id,
+			X: options.e.clientX, 
+			Y: options.e.clientY
 		});
 	}
 });
@@ -86,10 +88,12 @@ socket.on('remove object', function (data) {
 
 socket.on('new points', function (data) {
 	var pointsRect = new fabric.Text('+'+data.amount, {  
-		//left: getRandomInt(data.X - 50, (data.X + 50) < (window.innerWidth - 150) ? (data.X + 50) : (window.innerWidth - 150)), 
-		//top: getRandomInt(data.Y - 50, (data.Y + 50) < (window.innerHeight - 150) ? (data.Y + 50) : (window.innerHeight - 150)), 
-		left: getRandomInt(50, window.innerWidth - 150),
-		top: getRandomInt(50, window.innerHeight - 150),
+		left: getRandomInt((data.X - 150) < 0 ? 0 : (data.X - 150), 
+			(data.X + 150) < (window.innerWidth - 150) ? (data.X + 50) : (window.innerWidth - 150)), 
+		top: getRandomInt((data.Y - 150) < 0 ? 0 : (data.Y - 150), 
+			(data.Y + 150) < (window.innerHeight - 150) ? (data.Y + 50) : (window.innerHeight - 150)), 
+		//left: getRandomInt(50, window.innerWidth - 150),
+		//top: getRandomInt(50, window.innerHeight - 150),
 		fontSize: 50,
 		selectable: false,
 		evented: false,
