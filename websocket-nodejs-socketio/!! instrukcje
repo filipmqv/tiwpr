@@ -27,3 +27,4 @@ server okresowo usuwa dawno niezalogowanych userow i dawno nieuzywane puste poko
 po podłączeniu wyemituj wszystkie obiekty ktore są w pokoju
 
 wyniki zawsze na wierzchu
+rozna liczba pkt w zaleznosci od wielkosci obiektu - im mniejszy tym wiecej pkt; można tez od czasu - im szybciej tym wiecej pkt

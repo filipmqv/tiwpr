@@ -83,12 +83,17 @@ canvas.on('mouse:down', function(options) {
 	});
 	if (options.target && options.target.gameObject) {
 		console.log('an object was clicked! ', options.target);
-		socket.emit('object click', {
-		id: options.target.id
-	});
-}
+		socket.emit('game object click', {
+			id: options.target.id
+		});
+	}
 });
 
+socket.on('remove object', function (data) {
+	canvas.remove(canvasObjects[data.id]);
+	delete canvasObjects[data.id]
+	canvas.renderAll();
+});
 /*socket.on('begin', function (data) {
 	rect.set(data);
 	canvas.renderAll();
