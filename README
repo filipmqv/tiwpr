@@ -1,6 +1,5 @@
 REST-PROJECT:
 
-____________________________
 
 rest-client:
 
@@ -24,8 +23,37 @@ angular:	grunt serve		// just for development
 db manager:	mongo			// console mongoDB manager 
 
 
+uruchomienie w sieci wewnętrznej:
+api.py: (server)
+	#app.run(threaded=True)
+	app.run(threaded=True,host="0.0.0.0",port=int("5000"))
+services.js: (client)
+	//var lhost = 'http://localhost:5000/';
+	var lhost = 'http://192.168.1.4:5000/';
+Gruntfile.js: (client)
+	//hostname: 'localhost',
+	hostname: '0.0.0.0',
+
+
+
+############################
+############################
 ############################
 
 WEBSOCKETS-PROJECT:
+
+uruchom serwer:		npm start
+
+
+
+
+
+
+
+
+
+
+
+
 
 
