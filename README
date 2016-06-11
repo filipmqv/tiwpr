@@ -17,7 +17,7 @@ simple REST server working with MongoDB
 
 ____________________________
 
-mongodb:	sudo service mongod stop; mongod --dbpath={{path_to}}/rest-eve-python/data/db/
+mongodb:	sudo service mongod stop; mongod --dbpath=/home/filipmqv/tiwpr/rest-eve-python/data/db/
 gui:		robomongo 		// from proper dir
 server:		python api.py
 angular:	grunt serve		// just for development
